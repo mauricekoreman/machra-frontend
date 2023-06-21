@@ -23,7 +23,7 @@ export const Verhalen = () => {
 
   return (
     <Container
-      role='main'
+      component='main'
       sx={{
         paddingTop: 2,
         display: "grid",
@@ -64,6 +64,7 @@ export const Verhalen = () => {
     </Container>
   );
 };
+
 
 
 

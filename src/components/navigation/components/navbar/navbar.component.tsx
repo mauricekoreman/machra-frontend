@@ -1,4 +1,13 @@
-import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemIcon } from "@mui/material";
+import {
+  Box,
+  Container,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+} from "@mui/material";
 import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Header } from "../header/header.component";
@@ -40,14 +49,14 @@ const drawerWidth = 270;
 const iconSize = 21;
 const navItems = [
   {
-    text: "Spelen",
-    href: "/spelen",
-    icon: <BsDice3Fill size={iconSize - 4} />,
-  },
-  {
     text: "Alle verhalen",
     href: "/",
     icon: <MdLibraryBooks size={iconSize} />,
+  },
+  {
+    text: "Spelen",
+    href: "/spelen",
+    icon: <BsDice3Fill size={iconSize - 4} />,
   },
   {
     text: "De regels",
@@ -75,7 +84,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header
         headerTitle={currentLocation?.text}
         headerLeft={
@@ -125,7 +134,7 @@ export const Navbar: React.FC = () => {
         </Drawer>
       </Box>
       <Outlet />
-    </>
+    </Box>
   );
 };
 

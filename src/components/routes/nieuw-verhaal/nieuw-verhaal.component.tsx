@@ -23,7 +23,7 @@ export const NieuwVerhaal = () => {
           </IconButton>
         }
       />
-      <Container role='main' sx={{ py: 2 }}>
+      <Container component='main' sx={{ py: 2 }}>
         <Box
           component='form'
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
@@ -53,4 +53,5 @@ export const NieuwVerhaal = () => {
     </>
   );
 };
+
 

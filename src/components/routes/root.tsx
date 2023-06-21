@@ -6,6 +6,7 @@ import { Verhalen } from "./verhalen/verhalen.component";
 import { NieuwVerhaal } from "./nieuw-verhaal/nieuw-verhaal.component";
 import verhalen from "../../fake-db.json";
 import { TestPage } from "./test/test";
+import { Spelen } from "./spelen/spelen.component";
 
 export const Root = () => {
   const router = createBrowserRouter([
@@ -20,6 +21,10 @@ export const Root = () => {
           loader: async () => {
             return verhalen.data;
           },
+        },
+        {
+          path: "/spelen",
+          element: <Spelen />,
         },
         {
           path: "/regels",
@@ -49,5 +54,6 @@ export const Root = () => {
 
   return <RouterProvider router={router} />;
 };
+
 
 
