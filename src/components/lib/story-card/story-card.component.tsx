@@ -50,7 +50,7 @@ export const StoryCard: React.FC<{
   return (
     <Card
       onClick={() => setSelectedCard(index)}
-      sx={{ borderRadius: isSelectedCard ? 0 : 5, px: 1, pt: 1 }}
+      sx={{ borderRadius: isSelectedCard ? 0 : 5, px: 1, pt: 0.5 }}
       isSelected={isSelectedCard}
       component={StyledCard}
       layoutId={`card-container--index-${index}`}
@@ -89,4 +89,13 @@ export const StoryCard: React.FC<{
     </Card>
   );
 };
+
+
+
+
+
+
+
+
+
 

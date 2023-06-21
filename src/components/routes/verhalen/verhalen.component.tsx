@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
-import { Container } from "@mui/material";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { Container, Fab } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
+import { MdOutlineEdit as EditIcon } from "react-icons/md";
 
 export interface Verhaal {
   title: string;
@@ -15,6 +16,8 @@ export interface Verhaal {
 export const Verhalen = () => {
   const verhalen = useLoaderData() as Verhaal[];
   const [selectedCard, setSelectedCard] = useState(-1);
+
+  const navigate = useNavigate();
 
   // TODO: add filter component
 
@@ -38,7 +41,54 @@ export const Verhalen = () => {
           data={data}
         />
       ))}
+      {selectedCard === -1 && (
+        <Fab
+          color='primary'
+          onClick={() => navigate("/nieuw-verhaal")}
+          variant='extended'
+          sx={{
+            position: "fixed",
+            right: "1rem",
+            bottom: "2rem",
+            display: "flex",
+            gap: 1,
+            textTransform: "capitalize",
+            borderRadius: 5,
+            py: 4,
+          }}
+        >
+          <EditIcon size={21} />
+          Nieuw verhaal
+        </Fab>
+      )}
     </Container>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

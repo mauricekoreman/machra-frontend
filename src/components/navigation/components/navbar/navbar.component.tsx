@@ -1,13 +1,16 @@
-import { Box, Divider, Drawer, List, ListItem, ListItemIcon } from "@mui/material";
-import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemIcon } from "@mui/material";
+import { useMemo, useState } from "react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Header } from "../header/header.component";
 import styled from "@emotion/styled";
 
 import { MdLibraryBooks, MdList, MdSettings } from "react-icons/md";
 import { BsDice3Fill } from "react-icons/bs";
+import { MdMenu as MenuIcon } from "react-icons/md";
 
 import wapen from "../../../../assets/wapen.png";
+
+import { theme } from "../../../../theme";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -16,23 +19,24 @@ const StyledNavLink = styled(NavLink)`
   display: flex;
   align-items: center;
   gap: 1em;
-  padding-top: 0.7em;
-  padding-bottom: 0.7em;
+  padding-top: 0.9em;
+  padding-bottom: 0.9em;
   padding-left: 1em;
   padding-right: 1em;
-  border-radius: 5px;
-  outline: 1px solid #fff;
+  border-radius: 100px;
   background-color: transparent;
   transition: all 0.1s ease;
 
   &:hover,
-  &.active {
-    background-color: #deecfc;
-    outline: 1px solid #afd3fd;
+  &:hover svg,
+  &.active,
+  &.active svg {
+    background-color: ${theme.palette.primary.main};
+    color: ${theme.palette.primary.contrastText};
   }
 `;
 
-const drawerWidth = 230;
+const drawerWidth = 270;
 const iconSize = 21;
 const navItems = [
   {
@@ -59,6 +63,12 @@ const navItems = [
 
 export const Navbar: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  const currentLocation = useMemo(
+    () => navItems.find((el) => el.href === location.pathname),
+    [location]
+  );
 
   const toggleDrawer = () => {
     setSidebarOpen((prevState) => !prevState);
@@ -66,7 +76,14 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <Header onMenuButtonClick={toggleDrawer} />
+      <Header
+        headerTitle={currentLocation?.text}
+        headerLeft={
+          <IconButton color='inherit' size='large' edge='start' onClick={toggleDrawer}>
+            <MenuIcon />
+          </IconButton>
+        }
+      />
       <Box component='nav'>
         <Drawer
           ModalProps={{ keepMounted: true }} // Better open performance on mobile
@@ -75,7 +92,12 @@ export const Navbar: React.FC = () => {
           open={sidebarOpen}
           onClose={toggleDrawer}
           sx={{
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: drawerWidth },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              borderTopRightRadius: "18px",
+              borderBottomRightRadius: "18px",
+            },
           }}
         >
           <img
@@ -89,10 +111,10 @@ export const Navbar: React.FC = () => {
               margin: "0 auto",
             }}
           />
-          <Divider />
+          <Divider sx={{ mx: 3 }} />
           <List sx={{ px: 2 }}>
             {navItems.map((navItem) => (
-              <ListItem key={navItem.text} sx={{ p: 0, mb: 1 }} onClick={toggleDrawer}>
+              <ListItem key={navItem.text} sx={{ p: 0 }} onClick={toggleDrawer}>
                 <StyledNavLink to={navItem.href}>
                   <ListItemIcon sx={{ minWidth: 0 }}>{navItem.icon}</ListItemIcon>
                   {navItem.text}

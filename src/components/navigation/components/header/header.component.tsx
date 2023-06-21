@@ -1,29 +1,31 @@
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
-import { MdMenu as MenuIcon } from "react-icons/md";
+import { AppBar, Toolbar, Typography, useScrollTrigger } from "@mui/material";
+import { ReactNode } from "react";
 
 interface Header {
-  onMenuButtonClick: () => void;
+  headerLeft: ReactNode | null;
+  headerTitle: string | null | undefined;
 }
 
-export const Header: React.FC<Header> = ({ onMenuButtonClick }) => {
+export const Header: React.FC<Header> = ({ headerLeft, headerTitle = "Lug-dunum Machra" }) => {
+  const scrollTrigger = useScrollTrigger({ threshold: 0, disableHysteresis: true });
+
   return (
     <AppBar
       position='sticky'
-      variant='outlined'
       elevation={0}
-      sx={{ backgroundColor: "#ffffff55", backdropFilter: "blur(10px)", zIndex: 1 }}
+      sx={{
+        color: "primary.main",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        backdropFilter: "blur(8px)",
+        zIndex: 1,
+        boxShadow: scrollTrigger ? "inset 0px -1px 1px #ebebeb" : "none",
+      }}
     >
-      <Toolbar sx={{ color: "primary.main" }}>
-        <IconButton
-          size='large'
-          edge='start'
-          color='inherit'
-          sx={{ mr: 2 }}
-          onClick={onMenuButtonClick}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant='h6'>Lug-dunum Machra</Typography>
+      <Toolbar>
+        {headerLeft}
+        <Typography sx={{ ml: 1 }} variant='h6'>
+          {headerTitle}
+        </Typography>
       </Toolbar>
     </AppBar>
   );
