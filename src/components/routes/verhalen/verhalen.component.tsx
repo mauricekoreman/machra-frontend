@@ -26,6 +26,7 @@ export const Verhalen = () => {
       component='main'
       sx={{
         paddingTop: 2,
+        paddingBottom: 3,
         display: "grid",
         gap: 3,
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -64,6 +65,7 @@ export const Verhalen = () => {
     </Container>
   );
 };
+
 
 
 
