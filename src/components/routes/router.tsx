@@ -6,7 +6,7 @@ import { Verhalen } from "./verhalen/verhalen.component";
 import { NieuwVerhaal } from "./nieuw-verhaal/nieuw-verhaal.component";
 import verhalen from "../../fake-db.json";
 import { TestPage } from "./test/test";
-import { Spelen } from "./spelen/spelen.component";
+import { Spelen } from "./spelen";
 import { Verhaal } from "./verhaal/verhaal.component";
 import { Root } from "./root/root.component";
 
@@ -66,4 +66,5 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
 

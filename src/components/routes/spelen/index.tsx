@@ -31,9 +31,7 @@ export const Spelen = () => {
   const { isMachrabordActive, activeVerhaal, machrabordVerhalen, dispatch } = useMachrabord();
 
   function displayGameState() {
-    if (!activeVerhaal) {
-      return <SpelUitleg />;
-    } else if (machrabordVerhalen.length > 0) {
+    if (activeVerhaal && machrabordVerhalen.length > 0) {
       return (
         <Card variant='outlined' sx={{ borderRadius: 5, px: 1, pt: 0.5, flex: 1 }}>
           <CardContent>
@@ -44,13 +42,36 @@ export const Spelen = () => {
           </CardContent>
         </Card>
       );
-    } else if (machrabordVerhalen.length === 0) {
+    }
+
+    if (!activeVerhaal && machrabordVerhalen.length > 0) {
+      return <SpelUitleg />;
+    }
+
+    if (!activeVerhaal && machrabordVerhalen.length === 0) {
       return (
-        <Box>
-          <Typography>Spel is klaar, kaarten zijn op</Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 6, gap: 2 }}>
+          <Typography variant='h5'>Einde van Machrabord</Typography>
+          <Typography>Alle verhalen zijn gebruikt</Typography>
+          <Typography>Speel opnieuw of stoppen?</Typography>
+
+          <Box
+            sx={{
+              position: "fixed",
+              bottom: 30,
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 3,
+            }}
+          >
+            <Button title='Opnieuw' onClick={() => dispatch("start")} />
+            <Button title='Stoppen' onClick={() => dispatch("stop")} />
+          </Box>
         </Box>
       );
     }
+
+    return <Typography>Something went wrong...</Typography>;
   }
 
   return (
@@ -62,25 +83,27 @@ export const Spelen = () => {
         {isMachrabordActive ? (
           <>
             {displayGameState()}
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 30,
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 3,
-              }}
-            >
-              <Button
-                disabled={!activeVerhaal}
-                component={<RejectStoryIcon size={"2em"} />}
-                onClick={() => dispatch("rejectVerhaal")}
-              />
-              <Button
-                component={<NewStoryIcon size={"2em"} />}
-                onClick={() => dispatch("getVerhaal")}
-              />
-            </Box>
+            {machrabordVerhalen.length > 0 && (
+              <Box
+                sx={{
+                  position: "fixed",
+                  bottom: 30,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 3,
+                }}
+              >
+                <Button
+                  disabled={!activeVerhaal}
+                  component={<RejectStoryIcon size={"2em"} />}
+                  onClick={() => dispatch("rejectVerhaal")}
+                />
+                <Button
+                  component={<NewStoryIcon size={"2em"} />}
+                  onClick={() => dispatch("getVerhaal")}
+                />
+              </Box>
+            )}
           </>
         ) : (
           <MachrabordFilters />
@@ -89,5 +112,4 @@ export const Spelen = () => {
     </Container>
   );
 };
-
 
