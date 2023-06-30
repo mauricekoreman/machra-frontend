@@ -1,24 +1,75 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useReducer, useState } from "react";
+import { Verhaal } from "../../routes/verhalen/verhalen.component";
 
-type StartStop = "start" | "stop";
+// TODO: get this from a hook
+import fake_verhalen from "../../../fake-db.json";
+import { randomNumber } from "../../../utils/random-number";
+
+type machrabordReducerActions = "start" | "stop" | "getVerhaal" | "rejectVerhaal";
 
 interface IMachrabordState {
   isMachrabordActive: boolean;
-  startStopMachrabordSession: (action: StartStop) => void;
+  machrabordVerhalen: Verhaal[];
+  activeVerhaal: Verhaal | null;
+  dispatch: React.Dispatch<machrabordReducerActions>;
 }
 
-const MachrabordStateContext = createContext({});
+const machrabordInitialState: {
+  isMachrabordActive: boolean;
+  machrabordVerhalen: Verhaal[];
+  activeVerhaal: Verhaal | null;
+} = { isMachrabordActive: false, machrabordVerhalen: [], activeVerhaal: null };
+
+function machrabordReducer(state: typeof machrabordInitialState, action: machrabordReducerActions) {
+  switch (action) {
+    case "start":
+      return {
+        ...state,
+        isMachrabordActive: true,
+        machrabordVerhalen: fake_verhalen.data,
+      };
+    case "stop":
+      return {
+        ...state,
+        isMachrabordActive: false,
+        activeVerhaal: null,
+      };
+    case "getVerhaal": {
+      // remove old verhaal from list
+      let verhalenList = state.machrabordVerhalen;
+      if (state.activeVerhaal) {
+        verhalenList = state.machrabordVerhalen.filter(
+          (verhaal) => verhaal !== state.activeVerhaal
+        );
+      }
+
+      return {
+        ...state,
+        machrabordVerhalen: verhalenList,
+        activeVerhaal: verhalenList[randomNumber(verhalenList.length)],
+      };
+    }
+    case "rejectVerhaal": {
+      return {
+        ...state,
+        activeVerhaal: state.machrabordVerhalen[randomNumber(state.machrabordVerhalen.length)],
+      };
+    }
+    default:
+      return { ...state };
+  }
+}
+
+const MachrabordStateContext = createContext<IMachrabordState>({} as IMachrabordState);
 
 export const MachrabordProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isMachrabordActive, setIsMachrabordActive] = useState(false);
-
-  function startStopMachrabordSession(action: StartStop) {
-    setIsMachrabordActive(action === "start" ? true : false);
-  }
+  const [state, dispatch] = useReducer(machrabordReducer, machrabordInitialState);
 
   const value: IMachrabordState = {
-    isMachrabordActive,
-    startStopMachrabordSession,
+    isMachrabordActive: state.isMachrabordActive,
+    machrabordVerhalen: state.machrabordVerhalen,
+    activeVerhaal: state.activeVerhaal,
+    dispatch,
   };
 
   return (
@@ -27,6 +78,6 @@ export const MachrabordProvider: React.FC<{ children: ReactNode }> = ({ children
 };
 
 export const useMachrabord = () => {
-  return useContext(MachrabordStateContext) as IMachrabordState;
+  return useContext(MachrabordStateContext);
 };
 

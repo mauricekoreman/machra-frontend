@@ -1,13 +1,4 @@
-import {
-  Box,
-  Container,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-} from "@mui/material";
+import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemIcon } from "@mui/material";
 import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { Header } from "../header/header.component";
@@ -17,9 +8,9 @@ import { MdLibraryBooks, MdList, MdSettings } from "react-icons/md";
 import { BsDice3Fill } from "react-icons/bs";
 import { MdMenu as MenuIcon } from "react-icons/md";
 
-import wapen from "../../../../assets/wapen.png";
+import wapen from "../../../assets/wapen.png";
 
-import { theme } from "../../../../theme";
+import { theme } from "../../../theme";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
