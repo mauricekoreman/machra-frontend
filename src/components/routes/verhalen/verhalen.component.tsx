@@ -1,9 +1,9 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { Container, Fab, Stack, Typography } from "@mui/material";
+import { Box, Container, Fab } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
-import { MdOutlineEdit as EditIcon, MdOutlineFilterAlt as FilterIcon } from "react-icons/md";
-import { Button } from "../../lib/button/button.component";
+import { MdOutlineEdit as EditIcon } from "react-icons/md";
+import { SearchWithFilter } from "../../lib/searchbar";
 
 export interface Verhaal {
   id: string;
@@ -25,34 +25,27 @@ export const Verhalen = () => {
       sx={{
         paddingTop: 2,
         paddingBottom: 3,
-        display: "grid",
-        gap: 3,
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        gridAutoFlow: "dense",
       }}
     >
-      <Button
-        color='secondary'
-        onClick={() => console.log()}
-        disableElevation
-        title='Filter verhalen'
-        component={
-          <Stack direction={"row"} alignItems={"center"} spacing={1}>
-            <FilterIcon size={21} />
-            <Typography variant='button' sx={{ textTransform: "capitalize" }}>
-              Filter verhalen
-            </Typography>
-          </Stack>
-        }
-      />
-      {verhalen.map((data, index) => (
-        <StoryCard
-          key={index}
-          data={data}
-          expanded={false}
-          onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
-        />
-      ))}
+      <SearchWithFilter />
+      <Box
+        sx={{
+          display: "grid",
+          mt: 3,
+          gap: 3,
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gridAutoFlow: "dense",
+        }}
+      >
+        {verhalen.map((data, index) => (
+          <StoryCard
+            key={index}
+            data={data}
+            expanded={false}
+            onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
+          />
+        ))}
+      </Box>
       <Fab
         color='primary'
         onClick={() => navigate("/nieuw-verhaal")}
@@ -74,6 +67,19 @@ export const Verhalen = () => {
     </Container>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
