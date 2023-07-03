@@ -46,10 +46,14 @@ export const Spelen = () => {
 
   useEffect(() => {
     headerOptions({
-      headerRight: isMachrabordActive && <StopIcon size={27} color='orangered' onClick={() => setModalOpen(true)} />,
+      headerRight: isMachrabordActive && (
+        <Stack direction={"row"} alignItems={"center"} gap={0.5} onClick={() => setModalOpen(true)}>
+          <StopIcon size={21} color='orangered' />
+          <Typography color='orangered'>Stop spel</Typography>
+        </Stack>
+      ),
     });
   }, [headerOptions, isMachrabordActive]);
-
 
   function displayGameState() {
     if (activeVerhaal && machrabordVerhalen.length > 0) {
@@ -149,6 +153,17 @@ export const Spelen = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
 
 
 
