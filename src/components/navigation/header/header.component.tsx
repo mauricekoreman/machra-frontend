@@ -1,10 +1,11 @@
-import { AppBar, Box, Button, Toolbar, Typography, useScrollTrigger } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, useScrollTrigger } from "@mui/material";
 import { ReactNode } from "react";
-import { useMachrabord } from "../../contexts/machrabord/machrabord.provider";
 import styled from "@emotion/styled";
+import { useHeaderState } from "./header.state";
 
 interface Header {
-  headerLeft: ReactNode | null;
+  headerLeft?: ReactNode | null;
+  headerRight?: ReactNode | null;
   headerTitle: string | undefined;
 }
 
@@ -15,9 +16,15 @@ const TrucateHeaderTitle = styled(Typography)`
   -webkit-box-orient: vertical;
 `;
 
-export const Header: React.FC<Header> = ({ headerLeft, headerTitle = "Lug-dunum Machra" }) => {
+export const Header: React.FC<Header> = ({ headerLeft, headerRight, headerTitle }) => {
+  const headerState = useHeaderState();
+  const {
+    headerTitle: stateHeaderTitle,
+    headerLeft: stateHeaderLeft,
+    headerRight: stateHeaderRight,
+  } = headerState;
+
   const scrollTrigger = useScrollTrigger({ threshold: 0, disableHysteresis: true });
-  const { isMachrabordActive, dispatch } = useMachrabord();
 
   return (
     <AppBar
@@ -38,22 +45,12 @@ export const Header: React.FC<Header> = ({ headerLeft, headerTitle = "Lug-dunum 
             alignItems: "center",
           }}
         >
-          {headerLeft}
+          {stateHeaderLeft ?? headerLeft}
           <TrucateHeaderTitle sx={{ ml: 1, flex: 1 }} variant='h6'>
-            {headerTitle}
+            {stateHeaderTitle ?? headerTitle}
           </TrucateHeaderTitle>
         </Box>
-        {isMachrabordActive && (
-          <Button
-            size='medium'
-            color='error'
-            variant='text'
-            sx={{ textTransform: "capitalize" }}
-            onClick={() => dispatch("stop")}
-          >
-            Stop Machrabord
-          </Button>
-        )}
+        {stateHeaderRight ?? headerRight}
       </Toolbar>
     </AppBar>
   );

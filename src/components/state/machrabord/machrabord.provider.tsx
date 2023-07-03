@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useReducer, useState } from "react";
+import { ReactNode, createContext, useContext, useReducer } from "react";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
 
 // TODO: get this from a hook

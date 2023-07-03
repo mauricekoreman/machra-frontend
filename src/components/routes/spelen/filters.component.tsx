@@ -13,7 +13,7 @@ import {
 import { Button } from "../../lib/button/button.component";
 import { useState } from "react";
 import { machraJarenArray } from "../../../utils/machrajaren";
-import { useMachrabord } from "../../contexts/machrabord/machrabord.provider";
+import { useMachrabord } from "../../state/machrabord/machrabord.provider";
 
 export const MachrabordFilters = () => {
   const { dispatch } = useMachrabord();
@@ -102,4 +102,5 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
 

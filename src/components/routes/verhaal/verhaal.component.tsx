@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Verhaal as IVerhaal } from "../verhalen/verhalen.component";
-import { Header } from "../../navigation/header/header.component";
+import { Header } from "../../navigation/header";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useScroll } from "../../../hooks/useScroll";
 
@@ -28,4 +28,5 @@ export const Verhaal = () => {
     </>
   );
 };
+
 

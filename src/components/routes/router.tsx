@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Navbar } from "../navigation/navbar/navbar.component";
+import { DrawerNavigation } from "../navigation/drawer-navigation/drawer-navigation.component";
 import { NotFound } from "./not-found/not-found.component";
 import { Regels } from "./regels/regels.component";
 import { Verhalen } from "./verhalen/verhalen.component";
@@ -19,7 +19,7 @@ export const Router = () => {
       children: [
         {
           path: "/",
-          element: <Navbar />,
+          element: <DrawerNavigation />,
           children: [
             {
               index: true,
@@ -66,5 +66,7 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
+
 
 

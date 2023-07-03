@@ -1,21 +1,21 @@
-import { SxProps, Theme } from "@mui/material";
+import { ButtonProps, SxProps, Theme } from "@mui/material";
 import { Button as MuiButton } from "@mui/material";
 
-export const Button: React.FC<{
+interface IButton extends ButtonProps {
   title?: string;
   component?: JSX.Element;
-  onClick: () => void;
   sx?: SxProps<Theme>;
-  disabled?: boolean;
-}> = ({ title, component, onClick, sx, disabled = false }) => (
+}
+
+export const Button: React.FC<IButton> = ({ title, component, sx, ...props }) => (
   <MuiButton
-    onClick={onClick}
     variant='contained'
     size='medium'
     color='primary'
-    disabled={disabled}
     sx={{ borderRadius: 100, textTransform: "capitalize", py: 1.5, px: 4, ...sx }}
+    {...props}
   >
     {component ? component : title}
   </MuiButton>
 );
+

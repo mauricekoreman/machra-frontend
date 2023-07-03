@@ -1,7 +1,7 @@
 import { Router } from "./components/routes/router";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
-import { MachrabordProvider } from "./components/contexts/machrabord/machrabord.provider";
+import { MachrabordProvider } from "./components/state/machrabord/machrabord.provider";
 
 function App() {
   return (
@@ -15,4 +15,5 @@ function App() {
 }
 
 export default App;
+
 

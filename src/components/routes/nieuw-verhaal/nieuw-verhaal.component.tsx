@@ -1,8 +1,8 @@
 import { Box, Button, Container, IconButton, TextField } from "@mui/material";
-import { Header } from "../../navigation/header/header.component";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { FormEvent } from "react";
+import { Header } from "../../navigation/header";
 
 export const NieuwVerhaal = () => {
   const navigate = useNavigate();
@@ -53,5 +53,4 @@ export const NieuwVerhaal = () => {
     </>
   );
 };
-
 

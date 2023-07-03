@@ -1,8 +1,9 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { Container, Fab } from "@mui/material";
+import { Container, Fab, Stack, Typography } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
-import { MdOutlineEdit as EditIcon } from "react-icons/md";
+import { MdOutlineEdit as EditIcon, MdOutlineFilterAlt as FilterIcon } from "react-icons/md";
+import { Button } from "../../lib/button/button.component";
 
 export interface Verhaal {
   id: string;
@@ -30,6 +31,20 @@ export const Verhalen = () => {
         gridAutoFlow: "dense",
       }}
     >
+      <Button
+        color='secondary'
+        onClick={() => console.log()}
+        disableElevation
+        title='Filter verhalen'
+        component={
+          <Stack direction={"row"} alignItems={"center"} spacing={1}>
+            <FilterIcon size={21} />
+            <Typography variant='button' sx={{ textTransform: "capitalize" }}>
+              Filter verhalen
+            </Typography>
+          </Stack>
+        }
+      />
       {verhalen.map((data, index) => (
         <StoryCard
           key={index}
@@ -59,4 +74,61 @@ export const Verhalen = () => {
     </Container>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -5,11 +5,14 @@ export const theme = createTheme({
     primary: {
       // light, dark and contrastText will be calculated from .main
       main: "#000033ED",
+      contrastText: "#FFF",
     },
     secondary: {
       main: "#E9B44C",
+      contrastText: "#FFF",
     },
   },
 });
+
 
 

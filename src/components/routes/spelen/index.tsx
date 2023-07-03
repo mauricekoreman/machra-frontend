@@ -3,11 +3,14 @@
  * Deze verhalen worden gecached zodat als er nieuwe verhalen worden geupload door andere
  * gebruikers, deze niet per ongeluk in de lijst komen en het verstoren.
  *
+ * DONE
  * Zodra het verhaal is voorgelezen wordt deze op 'gebruikt' gezet. Deze komt nu niet meer voor in de rest van het spel
  *
+ * DONE
  * Als de host niet tevreden is met het verhaal kan er een ander verhaal worden opgevraagd.
  * Het verhaal dat niet voorgelezen is, wordt NIET op 'gebruikt' gezet en kan dus in een latere ronde terugkomen.
  *
+ * WIP:
  * Er kan ook gezocht worden door alle verhalen momenteel in het spel. Dit is een overzicht zoals in '/verhalen' met filter mogelijkheden.
  * Een verhaal uit de lijst kan worden aangeklikt en er staat dan een knop: 'gebruik'. Nu is het verhaal op 'gebruikt' gezet.
  *
@@ -20,15 +23,33 @@
  * Filter mogelijkheid om vóór het beginnen van het spel type verhalen kan kiezne (toegevoegde datum)
  */
 
-import { Box, Container, Card, CardContent, Typography } from "@mui/material";
+import { Box, Container, Card, CardContent, Typography, Stack } from "@mui/material";
 import { MdClose as RejectStoryIcon, MdCheck as NewStoryIcon } from "react-icons/md";
-import { useMachrabord } from "../../contexts/machrabord/machrabord.provider";
+import { useMachrabord } from "../../state/machrabord/machrabord.provider";
 import { MachrabordFilters } from "./filters.component";
 import { SpelUitleg } from "./spel-uitleg.component";
 import { Button } from "../../lib/button/button.component";
+import { Button as MuiButton } from '@mui/material';
+import { Modal } from "../../lib/modal/modal.component";
+import { useEffect, useState } from "react";
+import { useHeader } from "../../navigation/header";
+import { MdOutlineStopCircle as StopIcon } from "react-icons/md";
 
 export const Spelen = () => {
   const { isMachrabordActive, activeVerhaal, machrabordVerhalen, dispatch } = useMachrabord();
+  const { headerOptions } = useHeader();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function closeModal() {
+    setModalOpen(false);
+  }
+
+  useEffect(() => {
+    headerOptions({
+      headerRight: isMachrabordActive && <StopIcon size={27} color='orangered' onClick={() => setModalOpen(true)} />,
+    });
+  }, [headerOptions, isMachrabordActive]);
+
 
   function displayGameState() {
     if (activeVerhaal && machrabordVerhalen.length > 0) {
@@ -75,41 +96,71 @@ export const Spelen = () => {
   }
 
   return (
-    <Container
-      component='main'
-      sx={{ flex: 1, display: "flex", flexDirection: "column", pt: 2, pb: 16 }}
-    >
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        {isMachrabordActive ? (
-          <>
-            {displayGameState()}
-            {machrabordVerhalen.length > 0 && (
-              <Box
-                sx={{
-                  position: "fixed",
-                  bottom: 30,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 3,
-                }}
-              >
-                <Button
-                  disabled={!activeVerhaal}
-                  component={<RejectStoryIcon size={"2em"} />}
-                  onClick={() => dispatch("rejectVerhaal")}
-                />
-                <Button
-                  component={<NewStoryIcon size={"2em"} />}
-                  onClick={() => dispatch("getVerhaal")}
-                />
-              </Box>
-            )}
-          </>
-        ) : (
-          <MachrabordFilters />
-        )}
-      </Box>
-    </Container>
+    <>
+      <Container
+        component='main'
+        sx={{ flex: 1, display: "flex", flexDirection: "column", pt: 2, pb: 16 }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {isMachrabordActive ? (
+            <>
+              {displayGameState()}
+              {machrabordVerhalen.length > 0 && (
+                <Box
+                  sx={{
+                    position: "fixed",
+                    bottom: 30,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 3,
+                  }}
+                >
+                  <Button
+                    disabled={!activeVerhaal}
+                    component={<RejectStoryIcon size={"2em"} />}
+                    onClick={() => dispatch("rejectVerhaal")}
+                  />
+                  <Button
+                    component={<NewStoryIcon size={"2em"} />}
+                    onClick={() => dispatch("getVerhaal")}
+                  />
+                </Box>
+              )}
+            </>
+          ) : (
+            <MachrabordFilters />
+          )}
+        </Box>
+      </Container>
+      <Modal open={modalOpen} onClose={closeModal}>
+        <Typography>Klik op bevestig om het spel te stoppen</Typography>
+        <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
+          <MuiButton onClick={closeModal}>Annuleer</MuiButton>
+          <MuiButton
+            onClick={() => {
+              dispatch("stop");
+              closeModal();
+            }}
+          >
+            Bevestig
+          </MuiButton>
+        </Stack>
+      </Modal>
+    </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
