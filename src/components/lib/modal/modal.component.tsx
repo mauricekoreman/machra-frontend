@@ -2,7 +2,7 @@ import { Box, Modal as MuiModal, Typography } from "@mui/material";
 
 export const Modal: React.FC<{
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void | undefined;
   title?: string;
   children: React.ReactNode;
 }> = ({ open, onClose, title, children }) => {
@@ -26,4 +26,5 @@ export const Modal: React.FC<{
     </MuiModal>
   );
 };
+
 

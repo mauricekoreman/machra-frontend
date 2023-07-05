@@ -1,38 +1,55 @@
-import { ReactNode, createContext, useContext, useReducer } from "react";
+import { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
 
 // TODO: get this from a hook
 import fake_verhalen from "../../../fake-db.json";
 import { randomNumber } from "../../../utils/random-number";
 
-type machrabordReducerActions = "start" | "stop" | "getVerhaal" | "rejectVerhaal";
+type machrabordReducerActions =
+  | "start"
+  | "stop"
+  | "getVerhaal"
+  | "rejectVerhaal"
+  | "changeGameState";
 
 interface IMachrabordState {
   isMachrabordActive: boolean;
   machrabordVerhalen: Verhaal[];
   activeVerhaal: Verhaal | null;
-  dispatch: React.Dispatch<machrabordReducerActions>;
+  gameState: "uitleg" | "filterSettings" | "spel" | "einde";
 }
 
-const machrabordInitialState: {
-  isMachrabordActive: boolean;
-  machrabordVerhalen: Verhaal[];
-  activeVerhaal: Verhaal | null;
-} = { isMachrabordActive: false, machrabordVerhalen: [], activeVerhaal: null };
+type Action =
+  | {
+      type: Exclude<machrabordReducerActions, "changeGameState">;
+    }
+  | {
+      type: Extract<machrabordReducerActions, "changeGameState">;
+      payload: IMachrabordState["gameState"];
+    };
 
-function machrabordReducer(state: typeof machrabordInitialState, action: machrabordReducerActions) {
-  switch (action) {
+const machrabordInitialState: IMachrabordState = {
+  isMachrabordActive: false,
+  machrabordVerhalen: [],
+  activeVerhaal: null,
+  gameState: "filterSettings",
+};
+
+function machrabordReducer(state: typeof machrabordInitialState, action: Action): IMachrabordState {
+  switch (action.type) {
     case "start":
       return {
         ...state,
         isMachrabordActive: true,
         machrabordVerhalen: fake_verhalen.data,
+        gameState: "uitleg",
       };
     case "stop":
       return {
         ...state,
         isMachrabordActive: false,
         activeVerhaal: null,
+        gameState: "filterSettings",
       };
     case "getVerhaal": {
       // remove old verhaal from list
@@ -47,6 +64,7 @@ function machrabordReducer(state: typeof machrabordInitialState, action: machrab
         ...state,
         machrabordVerhalen: verhalenList,
         activeVerhaal: verhalenList[randomNumber(verhalenList.length)],
+        gameState: "spel",
       };
     }
     case "rejectVerhaal": {
@@ -55,29 +73,52 @@ function machrabordReducer(state: typeof machrabordInitialState, action: machrab
         activeVerhaal: state.machrabordVerhalen[randomNumber(state.machrabordVerhalen.length)],
       };
     }
+    case "changeGameState": {
+      if (!action.payload) {
+        return { ...state };
+      }
+
+      const gameState = action.payload;
+      return {
+        ...state,
+        gameState: gameState,
+      };
+    }
     default:
       return { ...state };
   }
 }
 
-const MachrabordStateContext = createContext<IMachrabordState>({} as IMachrabordState);
+const MachrabordStateContext = createContext<IMachrabordState>(machrabordInitialState);
+const MachrabordDispatchContext = createContext<Dispatch<Action> | undefined>(undefined);
 
 export const MachrabordProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(machrabordReducer, machrabordInitialState);
 
-  const value: IMachrabordState = {
-    isMachrabordActive: state.isMachrabordActive,
-    machrabordVerhalen: state.machrabordVerhalen,
-    activeVerhaal: state.activeVerhaal,
-    dispatch,
-  };
-
   return (
-    <MachrabordStateContext.Provider value={value}>{children}</MachrabordStateContext.Provider>
+    <MachrabordStateContext.Provider value={state}>
+      <MachrabordDispatchContext.Provider value={dispatch}>
+        {children}
+      </MachrabordDispatchContext.Provider>
+    </MachrabordStateContext.Provider>
   );
 };
 
-export const useMachrabord = () => {
-  return useContext(MachrabordStateContext);
+export const useMachrabordState = () => {
+  const context = useContext(MachrabordStateContext);
+  if (context === undefined) {
+    throw new Error("useMachrabordState must be within a MachrabordProvider");
+  }
+
+  return context;
+};
+
+export const useMachrabordDispatch = () => {
+  const context = useContext(MachrabordDispatchContext);
+  if (context === undefined) {
+    throw new Error("useMachrabordDispatch must be within a MachrabordProvider");
+  }
+
+  return context;
 };
 

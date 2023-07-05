@@ -62,7 +62,7 @@ const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   return (
     <HeaderStateContext.Provider value={state}>
-      <HeaderDispatchContext.Provider value={dispatch}>{children}</HeaderDispatchContext.Provider>{" "}
+      <HeaderDispatchContext.Provider value={dispatch}>{children}</HeaderDispatchContext.Provider>
     </HeaderStateContext.Provider>
   );
 };
@@ -81,4 +81,5 @@ export function useHeader() {
 }
 
 export { HeaderProvider };
+
 

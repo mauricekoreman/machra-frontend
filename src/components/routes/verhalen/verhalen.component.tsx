@@ -9,8 +9,6 @@ export interface Verhaal {
   id: string;
   title: string;
   story: string;
-  punishment: string;
-  tile: number;
   active: boolean;
 }
 
@@ -67,6 +65,8 @@ export const Verhalen = () => {
     </Container>
   );
 };
+
+
 
 
 

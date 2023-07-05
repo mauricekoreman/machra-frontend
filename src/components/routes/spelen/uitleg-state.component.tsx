@@ -16,19 +16,23 @@ const ListItem = ({ children }: { children: React.ReactNode }) => (
   </li>
 );
 
-export const SpelUitleg = () => (
+export const UitlegState = () => (
   <Box sx={{ px: 2 }}>
     <Typography variant='h2' sx={{ fontSize: 21, fontWeight: 600 }}>
       Voor de Spelleider:
     </Typography>
     <StyledList>
       <ListItem>
+        Klik op het vak waar de speler op terecht komt. Is dit een verhaalvak, dan wordt er een
+        willekeurig verhaal weergeven
+      </ListItem>
+      <ListItem>
         Bij elke klik op{" "}
         <Codeblock>
           <NewStoryIcon size={"1.2em"} />
         </Codeblock>{" "}
-        wordt een random verhaal getrokken. Deze wordt uit op 'gebruikt' gezet en komt dan niet meer
-        voor in het spel.
+        wordt een willekeurig verhaal getrokken. Deze wordt uit op 'gebruikt' gezet en komt dan niet
+        meer voor in het spel.
       </ListItem>
       <ListItem>
         Als de host niet tevreden is met het verhaal kan er op{" "}
