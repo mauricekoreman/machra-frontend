@@ -10,6 +10,8 @@ export interface Verhaal {
   title: string;
   story: string;
   active: boolean;
+  year_of_story: number;
+  created_at: string;
 }
 
 export const Verhalen = () => {
