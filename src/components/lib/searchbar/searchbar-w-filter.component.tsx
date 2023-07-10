@@ -18,7 +18,7 @@ import { useState } from "react";
 import styled from "@emotion/styled";
 import { theme } from "../../../theme";
 
-const FilterButton = styled(Box)<{ showBubble: boolean }>`
+const FilterButton = styled(Box)<{ showbubble: boolean | undefined }>`
   position: relative;
   display: grid;
   place-items: center;
@@ -28,7 +28,7 @@ const FilterButton = styled(Box)<{ showBubble: boolean }>`
   border: 1px solid #e6eaebfc;
 
   &::after {
-    display: ${({ showBubble }) => (showBubble ? "visible" : "none")};
+    display: ${({ showbubble }) => (showbubble ? "visible" : "none")};
     position: absolute;
     content: "";
     transform: translate(70%, -80%);
@@ -62,7 +62,7 @@ export const SearchWithFilter = () => {
       <Stack direction={"row"} spacing={1}>
         <Searchbar />
         <FilterButton
-          showBubble={areFiltersSet}
+          showbubble={areFiltersSet ? areFiltersSet : undefined}
           onClick={() => setShowFilters((prevState) => !prevState)}
           component={"button"}
         >
@@ -117,4 +117,6 @@ export const SearchWithFilter = () => {
     </Box>
   );
 };
+
+
 

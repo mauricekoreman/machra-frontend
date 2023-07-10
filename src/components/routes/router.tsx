@@ -9,6 +9,8 @@ import { TestPage } from "./test/test";
 import { Spelen } from "./spelen";
 import { Verhaal } from "./verhaal/verhaal.component";
 import { Root } from "./root/root.component";
+import { Login } from "./auth/login/login.component";
+import { AuthRoot } from "./auth/root";
 
 export const Router = () => {
   const browserRouter = createBrowserRouter([
@@ -29,30 +31,30 @@ export const Router = () => {
               },
             },
             {
-              path: "/spelen",
+              path: "spelen",
               element: <Spelen />,
             },
             {
-              path: "/regels",
+              path: "regels",
               element: <Regels />,
             },
             {
-              path: "/test",
+              path: "test",
               element: <TestPage />,
             },
           ],
         },
         {
-          path: "/verhalen/:verhaalId",
+          path: "verhalen/:verhaalId",
           element: <Verhaal />,
         },
         {
-          path: "/nieuw-verhaal",
+          path: "nieuw-verhaal",
           element: <NieuwVerhaal />,
           errorElement: <NotFound />,
         },
         {
-          path: "/signin",
+          path: "signin",
           element: (
             <div>
               <h1>Sign in</h1>
@@ -60,12 +62,25 @@ export const Router = () => {
           ),
           errorElement: <NotFound />,
         },
+        {
+          path: "/auth",
+          element: <AuthRoot />,
+          children: [
+            {
+              path: "login",
+              element: <Login />,
+            },
+          ],
+        },
       ],
     },
   ]);
 
   return <RouterProvider router={browserRouter} />;
 };
+
+
+
 
 
 
