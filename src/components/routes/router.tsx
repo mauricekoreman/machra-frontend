@@ -11,8 +11,13 @@ import { Verhaal } from "./verhaal/verhaal.component";
 import { Root } from "./root/root.component";
 import { Login } from "./auth/login/login.component";
 import { AuthRoot } from "./auth/root";
+import { ProtectedRoute } from "./protected-route/protected-route";
+import { useAuthState } from "../state/auth/auth.provider";
+import { httpGetStories } from "../../api/storiesService";
 
 export const Router = () => {
+  const { user } = useAuthState();
+
   const browserRouter = createBrowserRouter([
     {
       path: "/",
@@ -21,13 +26,17 @@ export const Router = () => {
       children: [
         {
           path: "/",
-          element: <DrawerNavigation />,
+          element: (
+            <ProtectedRoute isAllowed={Boolean(user)}>
+              <DrawerNavigation />
+            </ProtectedRoute>
+          ),
           children: [
             {
               index: true,
               element: <Verhalen />,
               loader: async () => {
-                return verhalen.data;
+                return user?.token ? await httpGetStories(user.token) : null;
               },
             },
             {
@@ -54,17 +63,12 @@ export const Router = () => {
           errorElement: <NotFound />,
         },
         {
-          path: "signin",
-          element: (
-            <div>
-              <h1>Sign in</h1>
-            </div>
-          ),
-          errorElement: <NotFound />,
-        },
-        {
           path: "/auth",
-          element: <AuthRoot />,
+          element: (
+            <ProtectedRoute isAllowed={Boolean(!user)} redirectPath='/'>
+              <AuthRoot />
+            </ProtectedRoute>
+          ),
           children: [
             {
               path: "login",

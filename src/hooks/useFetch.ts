@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const useFetch = (url: string) => {
   const [data, setData] = useState<any>(null);
 
   async function getApiData() {
     try {
-      const response = await fetch(url, { method: "GET" });
-      // const data = response.json();
-      setData(response);
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      setData(response.data);
     } catch (error) {
       console.error(error);
     }

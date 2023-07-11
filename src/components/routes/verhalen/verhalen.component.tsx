@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { Box, Container, Fab } from "@mui/material";
+import { Box, Container, Fab, Typography } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
@@ -15,7 +15,7 @@ export interface Verhaal {
 }
 
 export const Verhalen = () => {
-  const verhalen = useLoaderData() as Verhaal[];
+  const { data: verhalen, error } = useLoaderData() as { data: Verhaal[]; error: any };
 
   const navigate = useNavigate();
 
@@ -45,6 +45,11 @@ export const Verhalen = () => {
             onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
           />
         ))}
+        {verhalen.length === 0 && (
+          <Typography fontSize={20} textAlign={"center"}>
+            Nog geen Machrabord verhalen!
+          </Typography>
+        )}
       </Box>
       <Fab
         color='primary'

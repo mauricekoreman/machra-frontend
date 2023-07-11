@@ -1,4 +1,13 @@
-import { Box, Divider, Drawer, IconButton, List, ListItem, ListItemIcon } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+} from "@mui/material";
 import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
@@ -11,6 +20,7 @@ import wapen from "../../../assets/wapen.png";
 
 import { theme } from "../../../theme";
 import { Header, HeaderProvider } from "../header";
+import { useAuthDispatch } from "../../state/auth/auth.provider";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -64,6 +74,7 @@ const navItems = [
 export const DrawerNavigation: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const authDispatch = useAuthDispatch();
 
   const currentLocation = useMemo(
     () => navItems.find((el) => el.href === location.pathname),
@@ -123,6 +134,9 @@ export const DrawerNavigation: React.FC = () => {
                 </ListItem>
               ))}
             </List>
+            <Button sx={{ mt: "auto", mb: 2 }} onClick={() => authDispatch({ type: "signout" })}>
+              Uitloggen
+            </Button>
           </Drawer>
         </Box>
         <Outlet />
@@ -130,4 +144,3 @@ export const DrawerNavigation: React.FC = () => {
     </HeaderProvider>
   );
 };
-

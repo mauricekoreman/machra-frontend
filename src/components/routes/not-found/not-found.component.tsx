@@ -4,6 +4,8 @@ import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 export const NotFound = () => {
   const error = useRouteError();
 
+  console.log("here", error);
+
   return (
     <Box sx={{ display: "grid", placeItems: "center", pt: 8 }}>
       <h1>Oepsie doepsie!</h1>
