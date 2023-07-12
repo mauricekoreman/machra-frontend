@@ -16,7 +16,7 @@ export const StoryCard: React.FC<{
   expanded: boolean;
   onClick?: () => void;
 }> = ({ data, expanded, onClick }) => {
-  const { story, title } = data;
+  const { description, title } = data;
 
   return (
     <Card
@@ -35,12 +35,13 @@ export const StoryCard: React.FC<{
           {title}
         </Typography>
         <Typography component={StyledStory} expanded={expanded} variant='body1'>
-          {story}
+          {description}
         </Typography>
       </CardContent>
     </Card>
   );
 };
+
 
 
 

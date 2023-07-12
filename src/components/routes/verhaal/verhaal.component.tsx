@@ -9,7 +9,7 @@ export const Verhaal = () => {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
   const { state }: { state: IVerhaal } = useLocation();
-  const { story, title } = state;
+  const { description, title } = state;
 
   return (
     <>
@@ -22,11 +22,12 @@ export const Verhaal = () => {
           <Typography variant='h6' sx={{ mb: 1 }}>
             {title}
           </Typography>
-          <Typography variant='body1'>{story}</Typography>
+          <Typography variant='body1'>{description}</Typography>
         </Box>
       </Container>
     </>
   );
 };
+
 
 

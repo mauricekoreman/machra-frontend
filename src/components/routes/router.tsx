@@ -4,7 +4,6 @@ import { NotFound } from "./not-found/not-found.component";
 import { Regels } from "./regels/regels.component";
 import { Verhalen } from "./verhalen/verhalen.component";
 import { NieuwVerhaal } from "./nieuw-verhaal/nieuw-verhaal.component";
-import verhalen from "../../fake-db.json";
 import { TestPage } from "./test/test";
 import { Spelen } from "./spelen";
 import { Verhaal } from "./verhaal/verhaal.component";
@@ -82,6 +81,7 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
 
 
 

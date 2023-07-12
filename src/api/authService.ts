@@ -7,12 +7,7 @@ export interface ILogin {
   password: string;
 }
 
-interface ILoginPromise {
-  data?: string | undefined;
-  error?: string;
-}
-
-export async function httpSignin(userData: ILogin): Promise<ILoginPromise> {
+export async function httpSignin(userData: ILogin) {
   if (!userData.username) {
     userData.username = "Machraan";
   }
@@ -23,13 +18,8 @@ export async function httpSignin(userData: ILogin): Promise<ILoginPromise> {
         "Content-Type": "application/json",
       },
     });
-    if (response.data) {
-      localStorage.setItem("MACHRA_USER_TOKEN", response.data.accessToken);
-
-      return { data: response.data.accessToken };
-    } else {
-      throw new Error();
-    }
+    localStorage.setItem("MACHRA_USER_TOKEN", response.data.accessToken);
+    return { data: response.data.accessToken };
   } catch (error: any) {
     return { error: error.response.data.message };
   }

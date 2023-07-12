@@ -8,7 +8,7 @@ import { SearchWithFilter } from "../../lib/searchbar";
 export interface Verhaal {
   id: string;
   title: string;
-  story: string;
+  description: string;
   active: boolean;
   year_of_story: number;
   created_at: string;

@@ -1,12 +1,13 @@
 import {
+  Alert,
   Box,
-  Button,
   Container,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
@@ -16,10 +17,13 @@ import { Header } from "../../navigation/header";
 import { machraJarenArray } from "../../../utils/machrajaren";
 import { PostVerhaal, httpPostStory } from "../../../api/storiesService";
 import { useAuthState } from "../../state/auth/auth.provider";
+import { Button } from "../../lib/button/button.component";
 
 export const NieuwVerhaal = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const titelRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
@@ -30,9 +34,10 @@ export const NieuwVerhaal = () => {
 
     try {
       if (titelRef.current && descRef.current && jaarGebeurtenis && user?.token) {
+        setLoading(true);
         const nieuwVerhaal: PostVerhaal = {
-          titel: titelRef.current.value,
-          desc: descRef.current.value,
+          title: titelRef.current.value,
+          description: descRef.current.value,
           active: false,
           year_of_story: jaarGebeurtenis,
         };
@@ -44,11 +49,13 @@ export const NieuwVerhaal = () => {
         }
 
         if (error) {
-          console.log(error);
+          setErrorMessage("Something went wrong...");
         }
       }
     } catch (error) {
-      console.error("je error boi", error);
+      console.error("Post new verhaal error", error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -86,7 +93,7 @@ export const NieuwVerhaal = () => {
             fullWidth
             minRows={4}
           />
-          <FormControl>
+          <FormControl required>
             <InputLabel id='jaar_gebeurtenis'>Jaar van gebeurtenis</InputLabel>
             <Select
               labelId='jaar_gebeurtenis'
@@ -101,17 +108,19 @@ export const NieuwVerhaal = () => {
               ))}
             </Select>
           </FormControl>
-          <Button
-            variant='contained'
-            size='medium'
-            color='primary'
-            sx={{ borderRadius: 100, textTransform: "capitalize", py: 1.5 }}
-            type='submit'
-          >
-            Upload verhaal
-          </Button>
+          <Button title='Upload verhaal' type='submit' loading={loading} />
         </Box>
       </Container>
+      <Snackbar
+        anchorOrigin={{ horizontal: "center", vertical: "top" }}
+        open={Boolean(errorMessage)}
+        autoHideDuration={2000}
+        onClose={() => setErrorMessage(null)}
+      >
+        <Alert sx={{ width: "100%" }} severity='error'>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
