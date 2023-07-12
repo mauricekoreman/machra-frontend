@@ -13,10 +13,12 @@ import { useHeader } from "../../navigation/header";
 import { MdOutlineStopCircle as StopIcon } from "react-icons/md";
 import { SpelState } from "./spel-state.component";
 import { EindeState } from "./einde-state.component";
+import { useVerhalenState } from "../../state/machrabord/verhalen.prover";
 
 export const Spelen = () => {
   const { isMachrabordActive, gameState } = useMachrabordState();
   const dispatch = useMachrabordDispatch();
+  const { verhalen } = useVerhalenState();
 
   const { headerOptions } = useHeader();
   const [modalOpen, setModalOpen] = useState(false);
@@ -60,7 +62,7 @@ export const Spelen = () => {
       case "einde":
         return (
           <EindeState
-            onClickOpnieuw={() => dispatch({ type: "start" })}
+            onClickOpnieuw={() => dispatch({ type: "start", payload: verhalen })}
             onClickStoppen={() => dispatch({ type: "stop" })}
           />
         );
@@ -96,4 +98,5 @@ export const Spelen = () => {
     </>
   );
 };
+
 

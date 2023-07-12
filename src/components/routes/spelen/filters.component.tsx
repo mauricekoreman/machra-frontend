@@ -14,9 +14,11 @@ import { Button } from "../../lib/button/button.component";
 import { useState } from "react";
 import { machraJarenArray } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
+import { useVerhalenState } from "../../state/machrabord/verhalen.prover";
 
 export const MachrabordFilters = () => {
   const dispatch = useMachrabordDispatch();
+  const { setVerhalen } = useVerhalenState();
 
   const [filterValue, setFilterVaiue] = useState("active");
   const [beginjaar, setBeginjaar] = useState("");
@@ -30,6 +32,11 @@ export const MachrabordFilters = () => {
     type === "begin"
       ? setBeginjaar(e.target.value as string)
       : setEindjaar(e.target.value as string);
+  }
+
+  async function startMachrabord() {
+    const verhalen = await setVerhalen();
+    dispatch({ type: "start", payload: verhalen });
   }
 
   return (
@@ -94,14 +101,18 @@ export const MachrabordFilters = () => {
           </Select>
         </FormControl>
       </Box>
-      <Button
-        title='Start Machrabord'
-        onClick={() => dispatch({ type: "start" })}
-        sx={{ marginTop: "auto" }}
-      />
+      <Button title='Start Machrabord' onClick={startMachrabord} sx={{ marginTop: "auto" }} />
     </Box>
   );
 };
+
+
+
+
+
+
+
+
 
 
 

@@ -1,11 +1,8 @@
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
-
-// TODO: get this from a hook
-import fake_verhalen from "../../../fake-db.json";
 import { randomNumber } from "../../../utils/random-number";
 
-type machrabordReducerActions =
+type MachrabordReducerActions =
   | "start"
   | "stop"
   | "getVerhaal"
@@ -21,11 +18,15 @@ interface IMachrabordState {
 
 type Action =
   | {
-      type: Exclude<machrabordReducerActions, "changeGameState">;
+      type: Exclude<MachrabordReducerActions, "changeGameState" | "start">;
     }
   | {
-      type: Extract<machrabordReducerActions, "changeGameState">;
+      type: Extract<MachrabordReducerActions, "changeGameState">;
       payload: IMachrabordState["gameState"];
+    }
+  | {
+      type: Extract<MachrabordReducerActions, "start">;
+      payload: Verhaal[];
     };
 
 const machrabordInitialState: IMachrabordState = {
@@ -37,13 +38,15 @@ const machrabordInitialState: IMachrabordState = {
 
 function machrabordReducer(state: typeof machrabordInitialState, action: Action): IMachrabordState {
   switch (action.type) {
-    case "start":
+    case "start": {
+      const verhalen = action.payload;
       return {
         ...state,
         isMachrabordActive: true,
-        machrabordVerhalen: fake_verhalen.data,
+        machrabordVerhalen: verhalen,
         gameState: "uitleg",
       };
+    }
     case "stop":
       return {
         ...state,
@@ -74,10 +77,6 @@ function machrabordReducer(state: typeof machrabordInitialState, action: Action)
       };
     }
     case "changeGameState": {
-      if (!action.payload) {
-        return { ...state };
-      }
-
       const gameState = action.payload;
       return {
         ...state,
@@ -121,4 +120,6 @@ export const useMachrabordDispatch = () => {
 
   return context;
 };
+
+
 

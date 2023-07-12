@@ -58,7 +58,7 @@ export const SpelState = () => {
           <Typography variant='h6' sx={{ mb: 1 }}>
             {activeVerhaal?.title}
           </Typography>
-          <Typography>{activeVerhaal?.story}</Typography>
+          <Typography>{activeVerhaal?.description}</Typography>
         </CardContent>
       </Card>
       <Box
@@ -96,4 +96,5 @@ export const SpelState = () => {
     </>
   );
 };
+
 
