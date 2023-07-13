@@ -5,21 +5,21 @@ import { Verhaal } from "../../routes/verhalen/verhalen.component";
 import { Alert, Snackbar } from "@mui/material";
 
 interface VerhalenProvider {
-  verhalen: Verhaal[];
+  verhalen: Verhaal[] | null;
   setVerhalen: () => Promise<Verhaal[]>;
 }
 
 export const VerhalenStateContext = createContext<VerhalenProvider>({} as VerhalenProvider);
 
 export const VerhalenProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [verhalen, _setVerhalen] = useState<Verhaal[]>([]);
+  const [verhalen, _setVerhalen] = useState<VerhalenProvider["verhalen"]>(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const { user } = useAuthState();
 
   async function setVerhalen() {
     if (!user || !user.token) return [];
 
-    const { data, error } = await httpGetStories(user.token);
+    const { data, error } = await httpGetStories({ token: user.token });
 
     if (error) {
       setErrorMessage(error);
@@ -60,4 +60,11 @@ export const useVerhalenState = () => {
 
   return context;
 };
+
+
+
+
+
+
+
 

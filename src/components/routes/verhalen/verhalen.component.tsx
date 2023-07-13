@@ -1,9 +1,11 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
-import { Box, Container, Fab, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Container, Fab, Skeleton, Typography } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
 import { SearchWithFilter } from "../../lib/searchbar";
+import { useVerhalenState } from "../../state/machrabord/verhalen.prover";
+import { useEffect, useState } from "react";
 
 export interface Verhaal {
   id: string;
@@ -15,7 +17,18 @@ export interface Verhaal {
 }
 
 export const Verhalen = () => {
-  const { data: verhalen, error } = useLoaderData() as { data: Verhaal[]; error: any };
+  const { verhalen, setVerhalen } = useVerhalenState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function settingVerhalen() {
+      await setVerhalen();
+    }
+
+    setLoading(true);
+    settingVerhalen();
+    verhalen && setLoading(false);
+  }, [verhalen]);
 
   const navigate = useNavigate();
 
@@ -37,18 +50,32 @@ export const Verhalen = () => {
           gridAutoFlow: "dense",
         }}
       >
-        {verhalen.map((data, index) => (
-          <StoryCard
-            key={index}
-            data={data}
-            expanded={false}
-            onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
-          />
-        ))}
-        {verhalen.length === 0 && (
-          <Typography fontSize={20} textAlign={"center"}>
-            Nog geen Machrabord verhalen!
-          </Typography>
+        {!loading && verhalen ? (
+          <>
+            {verhalen.map((data, index) => (
+              <StoryCard
+                key={index}
+                data={data}
+                expanded={false}
+                onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
+              />
+            ))}
+            {verhalen.length === 0 && (
+              <Typography fontSize={20} textAlign={"center"}>
+                Nog geen Machrabord verhalen!
+              </Typography>
+            )}
+          </>
+        ) : (
+          [...Array(3)].map((_, i) => (
+            <Skeleton
+              key={i}
+              variant='rounded'
+              sx={{ borderRadius: 5 }}
+              width={"100%"}
+              height={200}
+            />
+          ))
         )}
       </Box>
       <Fab
@@ -72,76 +99,3 @@ export const Verhalen = () => {
     </Container>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

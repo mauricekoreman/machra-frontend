@@ -3,9 +3,20 @@ import { Verhaal } from "../components/routes/verhalen/verhalen.component";
 
 const API_URL = "http://localhost:3000/stories";
 
-export async function httpGetStories(token: string) {
+interface HttpGetStories {
+  token: string;
+  params?: {
+    active?: boolean;
+    search?: string;
+    date1?: number;
+    date2?: number;
+  };
+}
+
+export async function httpGetStories({ token, params = {} }: HttpGetStories) {
   try {
     const response = await axios.get(`${API_URL}`, {
+      params: params,
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     });
     return { data: response.data as Verhaal[] };

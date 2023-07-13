@@ -12,7 +12,6 @@ import { Login } from "./auth/login/login.component";
 import { AuthRoot } from "./auth/root";
 import { ProtectedRoute } from "./protected-route/protected-route";
 import { useAuthState } from "../state/auth/auth.provider";
-import { httpGetStories } from "../../api/storiesService";
 
 export const Router = () => {
   const { user } = useAuthState();
@@ -34,9 +33,6 @@ export const Router = () => {
             {
               index: true,
               element: <Verhalen />,
-              loader: async () => {
-                return user?.token ? await httpGetStories(user.token) : null;
-              },
             },
             {
               path: "spelen",
@@ -81,6 +77,14 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
+
+
+
+
+
+
+
 
 
 
