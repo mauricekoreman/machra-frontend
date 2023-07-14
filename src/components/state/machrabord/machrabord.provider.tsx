@@ -55,18 +55,15 @@ function machrabordReducer(state: typeof machrabordInitialState, action: Action)
         gameState: "filterSettings",
       };
     case "getVerhaal": {
-      // remove old verhaal from list
+      // remove active verhaal from list
       let verhalenList = state.machrabordVerhalen;
-      if (state.activeVerhaal) {
-        verhalenList = state.machrabordVerhalen.filter(
-          (verhaal) => verhaal !== state.activeVerhaal
-        );
-      }
+      const activeVerhaal = verhalenList[randomNumber(verhalenList.length)];
+      verhalenList = state.machrabordVerhalen.filter((verhaal) => verhaal !== activeVerhaal);
 
       return {
         ...state,
         machrabordVerhalen: verhalenList,
-        activeVerhaal: verhalenList[randomNumber(verhalenList.length)],
+        activeVerhaal: activeVerhaal,
         gameState: "spel",
       };
     }
@@ -120,6 +117,22 @@ export const useMachrabordDispatch = () => {
 
   return context;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

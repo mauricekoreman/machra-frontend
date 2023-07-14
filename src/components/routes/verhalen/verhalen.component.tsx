@@ -4,8 +4,9 @@ import { Box, Container, Fab, Skeleton, Typography } from "@mui/material";
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
 import { SearchWithFilter } from "../../lib/searchbar";
-import { useVerhalenState } from "../../state/machrabord/verhalen.prover";
-import { useEffect, useState } from "react";
+import { useVerhalenState } from "../../state/machrabord/verhalen.provider";
+import { useCallback, useEffect, useState } from "react";
+import { GetStoriesParams } from "../../../api/storiesService";
 
 export interface Verhaal {
   id: string;
@@ -18,19 +19,23 @@ export interface Verhaal {
 
 export const Verhalen = () => {
   const { verhalen, setVerhalen } = useVerhalenState();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function settingVerhalen() {
-      await setVerhalen();
-    }
-
-    setLoading(true);
-    settingVerhalen();
-    verhalen && setLoading(false);
-  }, [verhalen]);
+  const [loadingFilters, setLoadingFilters] = useState(false);
 
   const navigate = useNavigate();
+
+  const settingVerhalen = useCallback(
+    async (params?: GetStoriesParams) => {
+      setLoadingFilters(true);
+      setVerhalen(params).then(() => setLoadingFilters(false));
+    },
+    [setVerhalen]
+  );
+
+  useEffect(() => {
+    if (verhalen === null) {
+      settingVerhalen();
+    }
+  }, [settingVerhalen, verhalen]);
 
   return (
     <Container
@@ -40,7 +45,7 @@ export const Verhalen = () => {
         paddingBottom: 3,
       }}
     >
-      <SearchWithFilter />
+      <SearchWithFilter getData={settingVerhalen} />
       <Box
         sx={{
           display: "grid",
@@ -50,13 +55,13 @@ export const Verhalen = () => {
           gridAutoFlow: "dense",
         }}
       >
-        {!loading && verhalen ? (
+        {verhalen && !loadingFilters ? (
           <>
             {verhalen.map((data, index) => (
               <StoryCard
                 key={index}
                 data={data}
-                expanded={false}
+                expanded={true}
                 onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
               />
             ))}

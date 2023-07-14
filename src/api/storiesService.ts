@@ -13,6 +13,8 @@ interface HttpGetStories {
   };
 }
 
+export type GetStoriesParams = HttpGetStories["params"];
+
 export async function httpGetStories({ token, params = {} }: HttpGetStories) {
   try {
     const response = await axios.get(`${API_URL}`, {
@@ -21,7 +23,15 @@ export async function httpGetStories({ token, params = {} }: HttpGetStories) {
     });
     return { data: response.data as Verhaal[] };
   } catch (error: any) {
-    return { error: error.response.data.message };
+    if (!error.response) {
+      return {
+        error: { message: "Internal server error", code: 500 },
+      };
+    }
+
+    return {
+      error: { message: error.response.data.message, code: error.response.data.statusCode },
+    };
   }
 }
 
@@ -39,6 +49,14 @@ export async function httpPostStory(token: string, story: PostVerhaal) {
     });
     return { data: response.data as Verhaal };
   } catch (error: any) {
-    return { error: error.response.data.message };
+    if (!error.response) {
+      return {
+        error: { message: "Internal server error", code: 500 },
+      };
+    }
+
+    return {
+      error: { message: error.response.data.message, code: error.response.data.statusCode },
+    };
   }
 }

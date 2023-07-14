@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { InputBase } from "@mui/material";
+import { useRef } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
 
 const Search = styled.div`
@@ -23,12 +24,34 @@ const Search = styled.div`
   }
 `;
 
-export const Searchbar = () => {
+interface Props {
+  inputRef?: React.RefObject<HTMLInputElement>;
+  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const Searchbar = ({ inputRef, handleChange }: Props) => {
   return (
     <Search>
       <SearchIcon size={21} />
-      <InputBase sx={{ flex: 1 }} placeholder='Zoeken...' />
+      <InputBase
+        onChange={handleChange}
+        inputRef={inputRef}
+        sx={{ flex: 1 }}
+        placeholder='Zoeken...'
+      />
     </Search>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
 

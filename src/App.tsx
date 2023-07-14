@@ -3,7 +3,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 import { MachrabordProvider } from "./components/state/machrabord/machrabord.provider";
 import { AuthProvider } from "./components/state/auth/auth.provider";
-import { VerhalenProvider } from "./components/state/machrabord/verhalen.prover";
+import { VerhalenProvider } from "./components/state/machrabord/verhalen.provider";
 
 function App() {
   return (

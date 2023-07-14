@@ -1,5 +1,6 @@
 import {
   Box,
+  ButtonBase,
   FormControl,
   InputLabel,
   MenuItem,
@@ -14,11 +15,12 @@ import {
   MdClose as ClearIcon,
 } from "react-icons/md";
 import { machraJarenArray } from "../../../utils/machrajaren";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { theme } from "../../../theme";
+import { GetStoriesParams } from "../../../api/storiesService";
 
-const FilterButton = styled(Box)<{ showbubble: boolean | undefined }>`
+const FilterButton = styled(ButtonBase)<{ showbubble: boolean | undefined }>`
   position: relative;
   display: grid;
   place-items: center;
@@ -39,8 +41,13 @@ const FilterButton = styled(Box)<{ showbubble: boolean | undefined }>`
   }
 `;
 
-export const SearchWithFilter = () => {
+interface Props {
+  getData: (params?: GetStoriesParams) => Promise<void>;
+}
+
+export const SearchWithFilter = ({ getData }: Props) => {
   const [showFilters, setShowFilters] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const [beginjaar, setBeginjaar] = useState("");
   const [eindjaar, setEindjaar] = useState("");
 
@@ -52,19 +59,34 @@ export const SearchWithFilter = () => {
       : setEindjaar(e.target.value as string);
   }
 
+  function handleSearch(e?: React.FormEvent) {
+    e?.preventDefault();
+
+    const date1 = beginjaar === "" ? undefined : Number(beginjaar);
+    const date2 = eindjaar === "" ? undefined : Number(eindjaar);
+    const search = searchRef.current?.value;
+
+    getData({ date1, date2, search });
+  }
+
   function clearFilters() {
     setBeginjaar("");
     setEindjaar("");
   }
 
+  useEffect(() => {
+    handleSearch();
+    // eslint-disable-next-line
+  }, [beginjaar, eindjaar]);
+
   return (
     <Box>
-      <Stack direction={"row"} spacing={1}>
-        <Searchbar />
+      <Stack component={"form"} direction={"row"} spacing={1} onSubmit={handleSearch}>
+        <Searchbar inputRef={searchRef} />
         <FilterButton
           showbubble={areFiltersSet ? areFiltersSet : undefined}
           onClick={() => setShowFilters((prevState) => !prevState)}
-          component={"button"}
+          type='button'
         >
           {areFiltersSet ? <FilterIcon size={21} /> : <FilterIconOutline size={21} />}
         </FilterButton>
@@ -117,6 +139,29 @@ export const SearchWithFilter = () => {
     </Box>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

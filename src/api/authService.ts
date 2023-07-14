@@ -21,6 +21,14 @@ export async function httpSignin(userData: ILogin) {
     localStorage.setItem("MACHRA_USER_TOKEN", response.data.accessToken);
     return { data: response.data.accessToken };
   } catch (error: any) {
-    return { error: error.response.data.message };
+    if (!error.response) {
+      return {
+        error: { message: "Internal server error", code: 500 },
+      };
+    }
+
+    return {
+      error: { message: error.response.data.message, code: error.response.data.statusCode },
+    };
   }
 }

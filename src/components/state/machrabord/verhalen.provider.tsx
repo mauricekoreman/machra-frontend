@@ -1,28 +1,34 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { useAuthState } from "../auth/auth.provider";
-import { httpGetStories } from "../../../api/storiesService";
+import { useAuthDispatch, useAuthState } from "../auth/auth.provider";
+import { GetStoriesParams, httpGetStories } from "../../../api/storiesService";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
 import { Alert, Snackbar } from "@mui/material";
 
 interface VerhalenProvider {
   verhalen: Verhaal[] | null;
-  setVerhalen: () => Promise<Verhaal[]>;
+  setVerhalen: (params?: GetStoriesParams) => Promise<Verhaal[]>;
 }
 
 export const VerhalenStateContext = createContext<VerhalenProvider>({} as VerhalenProvider);
 
 export const VerhalenProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const authDispatch = useAuthDispatch();
   const [verhalen, _setVerhalen] = useState<VerhalenProvider["verhalen"]>(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const { user } = useAuthState();
 
-  async function setVerhalen() {
+  async function setVerhalen(params?: GetStoriesParams) {
     if (!user || !user.token) return [];
 
-    const { data, error } = await httpGetStories({ token: user.token });
+    const { data, error } = await httpGetStories({ token: user.token, params });
 
     if (error) {
-      setErrorMessage(error);
+      if (error.code === 401) {
+        authDispatch({ type: "signout" });
+        return [];
+      }
+
+      setErrorMessage(error.message);
       return [];
     }
 
@@ -60,11 +66,4 @@ export const useVerhalenState = () => {
 
   return context;
 };
-
-
-
-
-
-
-
 

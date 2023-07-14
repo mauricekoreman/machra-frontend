@@ -14,18 +14,18 @@ import { Button } from "../../lib/button/button.component";
 import { useState } from "react";
 import { machraJarenArray } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
-import { useVerhalenState } from "../../state/machrabord/verhalen.prover";
+import { useVerhalenState } from "../../state/machrabord/verhalen.provider";
 
 export const MachrabordFilters = () => {
   const dispatch = useMachrabordDispatch();
   const { setVerhalen } = useVerhalenState();
 
-  const [filterValue, setFilterVaiue] = useState("active");
+  const [activeOrDate, setActiveOrDate] = useState("active");
   const [beginjaar, setBeginjaar] = useState("");
-  const [eindJaar, setEindjaar] = useState("");
+  const [eindjaar, setEindjaar] = useState("");
 
   function updateFilter(e: React.ChangeEvent<HTMLInputElement>) {
-    setFilterVaiue((e.target as HTMLInputElement).value);
+    setActiveOrDate((e.target as HTMLInputElement).value);
   }
 
   function handleChangeDate(e: SelectChangeEvent, type: "begin" | "eind") {
@@ -35,7 +35,11 @@ export const MachrabordFilters = () => {
   }
 
   async function startMachrabord() {
-    const verhalen = await setVerhalen();
+    const date1 = beginjaar === "" || activeOrDate === "active" ? undefined : Number(beginjaar);
+    const date2 = eindjaar === "" || activeOrDate === "active" ? undefined : Number(eindjaar);
+    const active = activeOrDate === "active" ? true : undefined;
+
+    const verhalen = await setVerhalen({ date1, date2, active });
     dispatch({ type: "start", payload: verhalen });
   }
 
@@ -52,7 +56,7 @@ export const MachrabordFilters = () => {
         Stel filters in
       </Typography>
       <FormControl>
-        <RadioGroup value={filterValue} onChange={updateFilter}>
+        <RadioGroup value={activeOrDate} onChange={updateFilter}>
           <FormControlLabel
             control={<Radio />}
             label='Huidige Machrabord versie'
@@ -69,7 +73,7 @@ export const MachrabordFilters = () => {
       </FormControl>
 
       <Box sx={{ display: "flex", width: "100%", maxWidth: "20rem", gap: 2, mt: 4, mb: 6 }}>
-        <FormControl fullWidth disabled={filterValue === "active"}>
+        <FormControl fullWidth disabled={activeOrDate === "active"}>
           <InputLabel id='beginjaar-label'>Beginjaar</InputLabel>
           <Select
             labelId='beginjaar-label'
@@ -85,11 +89,11 @@ export const MachrabordFilters = () => {
           </Select>
         </FormControl>
 
-        <FormControl fullWidth disabled={filterValue === "active" || !beginjaar}>
+        <FormControl fullWidth disabled={activeOrDate === "active" || !beginjaar}>
           <InputLabel id='eindjaar-label'>Eindjaar</InputLabel>
           <Select
             labelId='eindjaar-label'
-            value={eindJaar}
+            value={eindjaar}
             label='Eindjaar'
             onChange={(e) => handleChangeDate(e, "eind")}
           >
@@ -105,6 +109,17 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
 
 
 

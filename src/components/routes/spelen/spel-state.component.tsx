@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { machrabordTiles } from "../../../utils/machrabord-tiles";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "@emotion/styled";
 import { Button } from "../../lib/button/button.component";
 import {
@@ -31,7 +31,7 @@ const Tile = styled(ButtonBase)`
 export const SpelState = () => {
   const dispatch = useMachrabordDispatch();
   const { activeVerhaal, machrabordVerhalen } = useMachrabordState();
-  const [showActiveVerhaal, setShowActiveVerhaal] = useState(false);
+  const [hideActiveVerhaal, setHideActiveVerhaal] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   function getVerhaalOrNah(tileNumber: number) {
@@ -39,19 +39,13 @@ export const SpelState = () => {
 
     if (isStoryTile) {
       dispatch({ type: "getVerhaal" });
-      setShowActiveVerhaal(true);
+      setHideActiveVerhaal(false);
     } else {
       setModalOpen(true);
     }
   }
 
-  useEffect(() => {
-    if (machrabordVerhalen.length === 0) {
-      dispatch({ type: "changeGameState", payload: "einde" });
-    }
-  }, [machrabordVerhalen, dispatch]);
-
-  return showActiveVerhaal ? (
+  return !hideActiveVerhaal ? (
     <>
       <Card variant='outlined' sx={{ borderRadius: 5, px: 1, pt: 0.5, flex: 1 }}>
         <CardContent>
@@ -76,7 +70,12 @@ export const SpelState = () => {
         />
         <Button
           component={<NewStoryIcon size={"2em"} />}
-          onClick={() => setShowActiveVerhaal(false)}
+          onClick={() => {
+            if (machrabordVerhalen.length === 0) {
+              dispatch({ type: "changeGameState", payload: "einde" });
+            }
+            setHideActiveVerhaal(true);
+          }}
         />
       </Box>
     </>
@@ -96,5 +95,19 @@ export const SpelState = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

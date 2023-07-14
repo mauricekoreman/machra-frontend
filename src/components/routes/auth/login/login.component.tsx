@@ -5,6 +5,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Box,
 } from "@mui/material";
 import wapen from "../../../../assets/wapen.png";
 import { Button } from "../../../lib/button/button.component";
@@ -35,7 +36,7 @@ export const Login = () => {
       });
 
       if (error) {
-        setErrorMessage(error);
+        setErrorMessage(error.message);
         setLoading(false);
         return;
       }
@@ -59,7 +60,8 @@ export const Login = () => {
         <Typography fontSize={40} variant='h1' sx={{ mb: 2 }}>
           Machrabord
         </Typography>
-        <form
+        <Box
+          component={"form"}
           onSubmit={login}
           style={{ display: "flex", flexDirection: "column", gap: "8px", height: "100%" }}
         >
@@ -94,7 +96,7 @@ export const Login = () => {
             sx={{ marginTop: "auto", marginBottom: 4 }}
             type='submit'
           />
-        </form>
+        </Box>
       </Container>
       <Snackbar
         anchorOrigin={{ horizontal: "center", vertical: "top" }}
@@ -109,4 +111,8 @@ export const Login = () => {
     </>
   );
 };
+
+
+
+
 
