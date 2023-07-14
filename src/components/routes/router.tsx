@@ -25,7 +25,7 @@ export const Router = () => {
         {
           path: "/",
           element: (
-            <ProtectedRoute isAllowed={Boolean(user)}>
+            <ProtectedRoute isAllowed={user.roles.length > 0}>
               <DrawerNavigation />
             </ProtectedRoute>
           ),
@@ -50,17 +50,25 @@ export const Router = () => {
         },
         {
           path: "verhalen/:verhaalId",
-          element: <Verhaal />,
+          element: (
+            <ProtectedRoute isAllowed={user.roles.length > 0}>
+              <Verhaal />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "nieuw-verhaal",
-          element: <NieuwVerhaal />,
+          element: (
+            <ProtectedRoute isAllowed={user.roles.length > 0}>
+              <NieuwVerhaal />
+            </ProtectedRoute>
+          ),
           errorElement: <NotFound />,
         },
         {
           path: "/auth",
           element: (
-            <ProtectedRoute isAllowed={Boolean(!user)} redirectPath='/'>
+            <ProtectedRoute isAllowed={user.roles.length === 0} redirectPath='/'>
               <AuthRoot />
             </ProtectedRoute>
           ),
@@ -77,6 +85,11 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
+
+
+
+
 
 
 

@@ -16,12 +16,13 @@ import { FormEvent, useRef, useState } from "react";
 import { Header } from "../../navigation/header";
 import { machraJarenArray } from "../../../utils/machrajaren";
 import { PostVerhaal, httpPostStory } from "../../../api/storiesService";
-import { useAuthState } from "../../state/auth/auth.provider";
+import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
 import { Button } from "../../lib/button/button.component";
 
 export const NieuwVerhaal = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
+  const authDispatch = useAuthDispatch();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +34,7 @@ export const NieuwVerhaal = () => {
     e.preventDefault();
 
     try {
-      if (titelRef.current && descRef.current && jaarGebeurtenis && user?.token) {
+      if (titelRef.current && descRef.current && jaarGebeurtenis && user.roles.length > 0) {
         setLoading(true);
         const nieuwVerhaal: PostVerhaal = {
           title: titelRef.current.value,
@@ -42,13 +43,17 @@ export const NieuwVerhaal = () => {
           year_of_story: jaarGebeurtenis,
         };
 
-        const { data, error } = await httpPostStory(user?.token, nieuwVerhaal);
+        const { data, error } = await httpPostStory(nieuwVerhaal);
 
         if (data) {
           navigate(-1);
         }
 
         if (error) {
+          console.log(error);
+          if (error.code === 401) {
+            authDispatch({ type: "signout" });
+          }
           setErrorMessage("Something went wrong...");
         }
       }

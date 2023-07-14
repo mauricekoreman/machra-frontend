@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Verhaal } from "../components/routes/verhalen/verhalen.component";
+import { accessToken as token } from "../contants";
 
 const API_URL = "http://localhost:3000/stories";
 
 interface HttpGetStories {
-  token: string;
+  token?: string;
   params?: {
     active?: boolean;
     search?: string;
@@ -15,11 +16,12 @@ interface HttpGetStories {
 
 export type GetStoriesParams = HttpGetStories["params"];
 
-export async function httpGetStories({ token, params = {} }: HttpGetStories) {
+export async function httpGetStories({ params = {} }: HttpGetStories) {
+  const accessToken = sessionStorage.getItem(token);
   try {
     const response = await axios.get(`${API_URL}`, {
       params: params,
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
     });
     return { data: response.data as Verhaal[] };
   } catch (error: any) {
@@ -42,10 +44,11 @@ export interface PostVerhaal {
   year_of_story: number;
 }
 
-export async function httpPostStory(token: string, story: PostVerhaal) {
+export async function httpPostStory(story: PostVerhaal) {
+  const accessToken = sessionStorage.getItem(token);
   try {
     const response = await axios.post(`${API_URL}`, story, {
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
     });
     return { data: response.data as Verhaal };
   } catch (error: any) {

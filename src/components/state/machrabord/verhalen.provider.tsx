@@ -18,9 +18,9 @@ export const VerhalenProvider: React.FC<{ children: ReactNode }> = ({ children }
   const { user } = useAuthState();
 
   async function setVerhalen(params?: GetStoriesParams) {
-    if (!user || !user.token) return [];
+    if (!user || user.roles.length === 0) return [];
 
-    const { data, error } = await httpGetStories({ token: user.token, params });
+    const { data, error } = await httpGetStories({ params });
 
     if (error) {
       if (error.code === 401) {
@@ -66,4 +66,5 @@ export const useVerhalenState = () => {
 
   return context;
 };
+
 

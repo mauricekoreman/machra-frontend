@@ -1,12 +1,13 @@
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
 
+type role = "admin" | "user";
+
 interface User {
-  token: string | null;
-  role: "admin" | "user" | null;
+  roles: role[];
 }
 
 interface IAuthState {
-  user: User | undefined;
+  user: User;
 }
 
 // type authReducerActions = 'signin' | 'create-user' | 'change-password'
@@ -14,28 +15,25 @@ interface IAuthState {
 type Action =
   | {
       type: "signin";
-      payload: string;
+      payload: role[];
     }
   | {
       type: "signout";
     };
 
-const token = localStorage.getItem("MACHRA_USER_TOKEN");
 const authInitialState: IAuthState = {
-  user: token ? { token, role: "user" } : undefined,
+  user: { roles: [] },
 };
 
 function authReducer(state: typeof authInitialState, action: Action): IAuthState {
   switch (action.type) {
     case "signin":
       return {
-        user: { role: "user", token: action.payload },
+        user: { roles: action.payload },
       };
     case "signout":
-      localStorage.removeItem("MACHRA_USER_TOKEN");
-
       return {
-        user: undefined,
+        user: { roles: [] },
       };
     default:
       return { ...state };

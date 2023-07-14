@@ -1,4 +1,5 @@
 import axios from "axios";
+import { accessToken } from "../contants";
 
 const API_URL = "http://localhost:3000/auth";
 
@@ -18,8 +19,8 @@ export async function httpSignin(userData: ILogin) {
         "Content-Type": "application/json",
       },
     });
-    localStorage.setItem("MACHRA_USER_TOKEN", response.data.accessToken);
-    return { data: response.data.accessToken };
+    sessionStorage.setItem(accessToken, response.data.accessToken);
+    return { data: response.data.roles };
   } catch (error: any) {
     if (!error.response) {
       return {
