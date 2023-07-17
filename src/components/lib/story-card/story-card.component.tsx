@@ -3,19 +3,18 @@ import { Card, CardContent, Typography } from "@mui/material";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
 import React from "react";
 
-const StyledStory = styled.p<{ expanded: boolean }>`
+const StyledStory = styled.p`
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${({ expanded }) => (expanded ? "none" : 7)};
+  -webkit-line-clamp: 7;
 `;
 
 export const StoryCard: React.FC<{
   data: Verhaal;
-  expanded: boolean;
   onClick?: () => void;
-}> = ({ data, expanded, onClick }) => {
+}> = ({ data, onClick }) => {
   const { description, title } = data;
 
   return (
@@ -34,7 +33,7 @@ export const StoryCard: React.FC<{
         <Typography variant='h6' sx={{ mb: 1 }}>
           {title}
         </Typography>
-        <Typography component={StyledStory} expanded={expanded} variant='body1'>
+        <Typography component={StyledStory} variant='body1'>
           {description}
         </Typography>
       </CardContent>

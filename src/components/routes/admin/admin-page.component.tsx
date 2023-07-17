@@ -6,7 +6,6 @@ export const AdminPage = () => {
   return (
     <Container sx={{ pt: 4 }}>
       <Stack sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <Button fullWidth title='Edit stories' />
         <Link to='create-user'>
           <Button fullWidth title='Create new user' />
         </Link>

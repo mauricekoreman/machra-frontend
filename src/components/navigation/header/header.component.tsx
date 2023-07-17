@@ -34,7 +34,7 @@ export const Header: React.FC<Header> = ({ headerLeft, headerRight, headerTitle 
         color: "primary.main",
         backgroundColor: "rgba(255, 255, 255, 0.8)",
         backdropFilter: "blur(8px)",
-        zIndex: 1,
+        zIndex: 2,
         boxShadow: scrollTrigger ? "inset 0px -1px 1px #ebebeb" : "none",
       }}
     >

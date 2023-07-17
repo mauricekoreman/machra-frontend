@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { useAuthDispatch, useAuthState } from "../auth/auth.provider";
+import { useAuthDispatch } from "../auth/auth.provider";
 import { GetStoriesParams, httpGetStories } from "../../../api/storiesService";
 import { Verhaal } from "../../routes/verhalen/verhalen.component";
 import { Alert, Snackbar } from "@mui/material";

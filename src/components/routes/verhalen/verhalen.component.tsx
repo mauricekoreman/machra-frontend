@@ -58,12 +58,7 @@ export const Verhalen = () => {
         {verhalen && !loadingFilters ? (
           <>
             {verhalen.map((data, index) => (
-              <StoryCard
-                key={index}
-                data={data}
-                expanded={true}
-                onClick={() => navigate(`/verhalen/${data.id}`, { state: data })}
-              />
+              <StoryCard key={index} data={data} onClick={() => navigate(`/verhalen/${data.id}`)} />
             ))}
             {verhalen.length === 0 && (
               <Typography fontSize={20} textAlign={"center"}>

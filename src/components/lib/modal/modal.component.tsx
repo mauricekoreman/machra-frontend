@@ -7,7 +7,7 @@ export const Modal: React.FC<{
   children: React.ReactNode;
 }> = ({ open, onClose, title, children }) => {
   return (
-    <MuiModal sx={{ display: "grid", placeItems: "center" }} open={open} onClose={onClose}>
+    <MuiModal sx={{ display: "grid", placeItems: "center", px: 2 }} open={open} onClose={onClose}>
       <Box
         sx={{
           bgcolor: "background.paper",

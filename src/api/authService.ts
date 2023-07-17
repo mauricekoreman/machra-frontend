@@ -42,9 +42,11 @@ export interface ICreateNewUser {
 }
 
 export async function httpCreateUser(userData: ICreateNewUser) {
+  const accessToken = sessionStorage.getItem(accessTokenKey);
   try {
     await axios.post(`${API_URL}/admin/create-user`, userData, {
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     });

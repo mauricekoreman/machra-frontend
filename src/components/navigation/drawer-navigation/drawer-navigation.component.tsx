@@ -75,11 +75,11 @@ export const DrawerNavigation: React.FC = () => {
     ...(isAdmin
       ? [{ text: "Admin", href: "/admin", icon: <MdAdminPanelSettings size={iconSize} /> }]
       : []),
-    {
-      text: "Test page",
-      href: "/test",
-      icon: <MdSettings />,
-    },
+    // {
+    //   text: "Test page",
+    //   href: "/test",
+    //   icon: <MdSettings />,
+    // },
   ];
 
   const currentLocation = useMemo(
