@@ -12,7 +12,7 @@ import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import { MdLibraryBooks, MdList, MdSettings } from "react-icons/md";
+import { MdAdminPanelSettings, MdLibraryBooks, MdList, MdSettings } from "react-icons/md";
 import { BsDice3Fill } from "react-icons/bs";
 import { MdMenu as MenuIcon } from "react-icons/md";
 
@@ -20,7 +20,7 @@ import wapen from "../../../assets/wapen.png";
 
 import { theme } from "../../../theme";
 import { Header, HeaderProvider } from "../header";
-import { useAuthDispatch } from "../../state/auth/auth.provider";
+import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -48,33 +48,39 @@ const StyledNavLink = styled(NavLink)`
 
 const drawerWidth = 270;
 const iconSize = 21;
-const navItems = [
-  {
-    text: "Alle verhalen",
-    href: "/",
-    icon: <MdLibraryBooks size={iconSize} />,
-  },
-  {
-    text: "Spelen",
-    href: "/spelen",
-    icon: <BsDice3Fill size={iconSize - 4} />,
-  },
-  {
-    text: "De regels",
-    href: "/regels",
-    icon: <MdList size={iconSize} />,
-  },
-  {
-    text: "Test page",
-    href: "/test",
-    icon: <MdSettings />,
-  },
-];
 
 export const DrawerNavigation: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const authDispatch = useAuthDispatch();
+  const { user } = useAuthState();
+  const isAdmin = user.roles.includes("admin");
+
+  const navItems = [
+    {
+      text: "Alle verhalen",
+      href: "/",
+      icon: <MdLibraryBooks size={iconSize} />,
+    },
+    {
+      text: "Spelen",
+      href: "/spelen",
+      icon: <BsDice3Fill size={iconSize - 4} />,
+    },
+    {
+      text: "De regels",
+      href: "/regels",
+      icon: <MdList size={iconSize} />,
+    },
+    ...(isAdmin
+      ? [{ text: "Admin", href: "/admin", icon: <MdAdminPanelSettings size={iconSize} /> }]
+      : []),
+    {
+      text: "Test page",
+      href: "/test",
+      icon: <MdSettings />,
+    },
+  ];
 
   const currentLocation = useMemo(
     () => navItems.find((el) => el.href === location.pathname),

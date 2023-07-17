@@ -1,9 +1,10 @@
-import { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
+import { Dispatch, ReactNode, createContext, useContext, useEffect, useReducer } from "react";
+import { accessTokenKey, userKey } from "../../../contants";
 
-type role = "admin" | "user";
+export type Role = "user" | "manager" | "admin";
 
 interface User {
-  roles: role[];
+  roles: Role[];
 }
 
 interface IAuthState {
@@ -15,7 +16,7 @@ interface IAuthState {
 type Action =
   | {
       type: "signin";
-      payload: role[];
+      payload: Role[];
     }
   | {
       type: "signout";
@@ -27,11 +28,16 @@ const authInitialState: IAuthState = {
 
 function authReducer(state: typeof authInitialState, action: Action): IAuthState {
   switch (action.type) {
-    case "signin":
+    case "signin": {
+      const userObj = { roles: action.payload };
+      sessionStorage.setItem(userKey, JSON.stringify(userObj));
       return {
-        user: { roles: action.payload },
+        user: userObj,
       };
+    }
     case "signout":
+      sessionStorage.removeItem(accessTokenKey);
+      sessionStorage.removeItem(userKey);
       return {
         user: { roles: [] },
       };
@@ -45,6 +51,16 @@ const AuthDispatch = createContext<Dispatch<Action> | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, authInitialState);
+
+  useEffect(() => {
+    const userObj = sessionStorage.getItem(userKey);
+    const isUser = state.user.roles.length > 0 ? true : false;
+
+    if (!isUser && userObj) {
+      const payload = (JSON.parse(userObj) as User)["roles"];
+      dispatch({ type: "signin", payload });
+    }
+  }, []);
 
   return (
     <AuthStateContext.Provider value={state}>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Verhaal } from "../components/routes/verhalen/verhalen.component";
-import { accessToken as token } from "../contants";
+import { accessTokenKey } from "../contants";
 
 const API_URL = "http://localhost:3000/stories";
 
@@ -17,7 +17,7 @@ interface HttpGetStories {
 export type GetStoriesParams = HttpGetStories["params"];
 
 export async function httpGetStories({ params = {} }: HttpGetStories) {
-  const accessToken = sessionStorage.getItem(token);
+  const accessToken = sessionStorage.getItem(accessTokenKey);
   try {
     const response = await axios.get(`${API_URL}`, {
       params: params,
@@ -45,7 +45,7 @@ export interface PostVerhaal {
 }
 
 export async function httpPostStory(story: PostVerhaal) {
-  const accessToken = sessionStorage.getItem(token);
+  const accessToken = sessionStorage.getItem(accessTokenKey);
   try {
     const response = await axios.post(`${API_URL}`, story, {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },

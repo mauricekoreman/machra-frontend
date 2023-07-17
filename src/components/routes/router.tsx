@@ -12,9 +12,14 @@ import { Login } from "./auth/login/login.component";
 import { AuthRoot } from "./auth/root";
 import { ProtectedRoute } from "./protected-route/protected-route";
 import { useAuthState } from "../state/auth/auth.provider";
+import { AdminPage } from "./admin/admin-page.component";
+import { accessTokenKey } from "../../contants";
+import { NewUserPage } from "./admin/new-user-page.component";
 
 export const Router = () => {
   const { user } = useAuthState();
+  const isAuthenticated = sessionStorage.getItem(accessTokenKey) ? true : false;
+  const isAdmin = user.roles.includes("admin");
 
   const browserRouter = createBrowserRouter([
     {
@@ -25,7 +30,7 @@ export const Router = () => {
         {
           path: "/",
           element: (
-            <ProtectedRoute isAllowed={user.roles.length > 0}>
+            <ProtectedRoute isAllowed={isAuthenticated}>
               <DrawerNavigation />
             </ProtectedRoute>
           ),
@@ -46,12 +51,26 @@ export const Router = () => {
               path: "test",
               element: <TestPage />,
             },
+            {
+              path: "admin",
+              element: <ProtectedRoute isAllowed={isAdmin} />,
+              children: [
+                {
+                  index: true,
+                  element: <AdminPage />,
+                },
+                {
+                  path: "create-user",
+                  element: <NewUserPage />,
+                },
+              ],
+            },
           ],
         },
         {
           path: "verhalen/:verhaalId",
           element: (
-            <ProtectedRoute isAllowed={user.roles.length > 0}>
+            <ProtectedRoute isAllowed={isAuthenticated}>
               <Verhaal />
             </ProtectedRoute>
           ),
@@ -59,7 +78,7 @@ export const Router = () => {
         {
           path: "nieuw-verhaal",
           element: (
-            <ProtectedRoute isAllowed={user.roles.length > 0}>
+            <ProtectedRoute isAllowed={isAuthenticated}>
               <NieuwVerhaal />
             </ProtectedRoute>
           ),
@@ -68,7 +87,7 @@ export const Router = () => {
         {
           path: "/auth",
           element: (
-            <ProtectedRoute isAllowed={user.roles.length === 0} redirectPath='/'>
+            <ProtectedRoute isAllowed={!isAuthenticated} redirectPath='/'>
               <AuthRoot />
             </ProtectedRoute>
           ),
@@ -85,6 +104,47 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,2 +1,5 @@
-// TOKENS
-export const accessToken = "MACHRA_ACCESS_TOKEN";
+// KEYS
+
+export const accessTokenKey = "MACHRA_ACCESS_TOKEN";
+export const userKey = "MACHRA_USER";
+

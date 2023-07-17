@@ -1,5 +1,6 @@
 import axios from "axios";
-import { accessToken } from "../contants";
+import { accessTokenKey } from "../contants";
+import { Role } from "../components/state/auth/auth.provider";
 
 const API_URL = "http://localhost:3000/auth";
 
@@ -19,8 +20,34 @@ export async function httpSignin(userData: ILogin) {
         "Content-Type": "application/json",
       },
     });
-    sessionStorage.setItem(accessToken, response.data.accessToken);
+    sessionStorage.setItem(accessTokenKey, response.data.accessToken);
     return { data: response.data.roles };
+  } catch (error: any) {
+    if (!error.response) {
+      return {
+        error: { message: "Internal server error", code: 500 },
+      };
+    }
+
+    return {
+      error: { message: error.response.data.message, code: error.response.data.statusCode },
+    };
+  }
+}
+
+export interface ICreateNewUser {
+  username: string;
+  password: string;
+  roles: Role[];
+}
+
+export async function httpCreateUser(userData: ICreateNewUser) {
+  try {
+    await axios.post(`${API_URL}/admin/create-user`, userData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error: any) {
     if (!error.response) {
       return {
