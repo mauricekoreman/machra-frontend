@@ -2,7 +2,8 @@ import axios from "axios";
 import { accessTokenKey } from "../contants";
 import { Role } from "../components/state/auth/auth.provider";
 
-const API_URL = "http://localhost:3000/auth";
+// const API_URL = "http://localhost:3000/auth";
+const API_URL = `${import.meta.env.VITE_BASE_URL}/auth`;
 
 export interface ILogin {
   username?: string | null;

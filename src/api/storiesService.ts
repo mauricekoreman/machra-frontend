@@ -2,7 +2,8 @@ import axios from "axios";
 import { Verhaal } from "../components/routes/verhalen/verhalen.component";
 import { accessTokenKey } from "../contants";
 
-const API_URL = "http://localhost:3000/stories";
+// const API_URL = "http://localhost:3000/stories";
+const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
 
 export async function httpGetStoryById(id: string) {
   const accessToken = sessionStorage.getItem(accessTokenKey);
