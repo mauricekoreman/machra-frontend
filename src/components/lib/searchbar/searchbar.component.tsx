@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { InputBase } from "@mui/material";
-import { useRef } from "react";
 import { MdSearch as SearchIcon } from "react-icons/md";
 
 const Search = styled.div`
@@ -42,6 +41,7 @@ export const Searchbar = ({ inputRef, handleChange }: Props) => {
     </Search>
   );
 };
+
 
 
 

@@ -3,6 +3,7 @@ import { accessTokenKey } from "../contants";
 import { Role } from "../components/state/auth/auth.provider";
 
 // const API_URL = "http://localhost:3000/auth";
+// @ts-ignore Property 'env' does not exist on type 'ImportMeta'
 const API_URL = `${import.meta.env.VITE_BASE_URL}/auth`;
 
 export interface ILogin {

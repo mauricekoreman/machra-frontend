@@ -3,6 +3,7 @@ import { Verhaal } from "../components/routes/verhalen/verhalen.component";
 import { accessTokenKey } from "../contants";
 
 // const API_URL = "http://localhost:3000/stories";
+// @ts-ignore Property 'env' does not exist on type 'ImportMeta'
 const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
 
 export async function httpGetStoryById(id: string) {

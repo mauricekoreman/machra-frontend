@@ -12,7 +12,7 @@ import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import { MdAdminPanelSettings, MdLibraryBooks, MdList, MdSettings } from "react-icons/md";
+import { MdAdminPanelSettings, MdLibraryBooks, MdList } from "react-icons/md";
 import { BsDice3Fill } from "react-icons/bs";
 import { MdMenu as MenuIcon } from "react-icons/md";
 
