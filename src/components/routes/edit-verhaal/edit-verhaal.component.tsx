@@ -19,9 +19,9 @@ import {
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 import { Header } from "../../navigation/header";
-import { machraJarenArray } from "../../../utils/machrajaren";
+import { machraJarenObj } from "../../../utils/machrajaren";
 import {
   PostVerhaal,
   httpDeleteStory,
@@ -53,14 +53,16 @@ export const EditVerhaal = () => {
 
   const titelRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
-  const [jaarGebeurtenis, setJaargebeurtenis] = useState<number | "">(year_of_story ?? "");
+  const [jaarGebeurtenis, setJaargebeurtenis] = useState<number>(year_of_story ?? "");
   const [verhaalActive, setVerhaalActive] = useState(active ?? true);
 
   const isManager = user.roles.includes("manager");
   const isAdmin = user.roles.includes("admin");
 
+  const machraJaren = useMemo(() => machraJarenObj(), []);
+
   async function submit() {
-    if (titelRef.current && descRef.current && jaarGebeurtenis && user.roles.length > 0) {
+    if (titelRef.current && descRef.current && !isNaN(jaarGebeurtenis) && user.roles.length > 0) {
       const verhaalState: PostVerhaal = {
         title: titelRef.current.value,
         description: descRef.current.value,
@@ -85,6 +87,7 @@ export const EditVerhaal = () => {
           authDispatch({ type: "signout" });
         }
         setErrorMessage("Something went wrong...");
+        setLoading(false);
       }
     }
   }
@@ -166,11 +169,14 @@ export const EditVerhaal = () => {
               label='Jaar van gebeurtenis'
               onChange={(e) => setJaargebeurtenis(e.target.value as number)}
             >
-              {machraJarenArray().map((jaar) => (
+              {machraJaren.values.map((jaar, index) => (
                 <MenuItem key={jaar} value={jaar}>
-                  {jaar}
+                  {machraJaren.ui[index]}
                 </MenuItem>
               ))}
+              <MenuItem key={"no-year"} value={0}>
+                Geen jaar
+              </MenuItem>
             </Select>
           </FormControl>
 
@@ -194,7 +200,7 @@ export const EditVerhaal = () => {
             type='submit'
             loading={loading}
           />
-          {isAdmin && (
+          {isAdmin && state !== null && (
             <Button
               title={"Verwijder verhaal"}
               type='button'

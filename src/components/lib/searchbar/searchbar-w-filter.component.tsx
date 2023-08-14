@@ -14,8 +14,8 @@ import {
   MdFilterAlt as FilterIcon,
   MdClose as ClearIcon,
 } from "react-icons/md";
-import { machraJarenArray } from "../../../utils/machrajaren";
-import { useEffect, useRef, useState } from "react";
+import { machraJarenObj } from "../../../utils/machrajaren";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { theme } from "../../../theme";
 import { GetStoriesParams } from "../../../api/storiesService";
@@ -52,6 +52,8 @@ export const SearchWithFilter = ({ getData }: Props) => {
   const [eindjaar, setEindjaar] = useState("");
 
   const areFiltersSet = Boolean(beginjaar);
+
+  const machraJaren = useMemo(() => machraJarenObj(), []);
 
   function handleChangeDate(e: SelectChangeEvent, type: "begin" | "eind") {
     type === "begin"
@@ -106,9 +108,9 @@ export const SearchWithFilter = ({ getData }: Props) => {
                 label='Beginjaar'
                 onChange={(e) => handleChangeDate(e, "begin")}
               >
-                {machraJarenArray().map((jaar) => (
+                {machraJaren.values.map((jaar, index) => (
                   <MenuItem key={jaar} value={jaar}>
-                    {jaar}
+                    {machraJaren.ui[index]}
                   </MenuItem>
                 ))}
               </Select>
@@ -125,11 +127,13 @@ export const SearchWithFilter = ({ getData }: Props) => {
                 label='Eindjaar'
                 onChange={(e) => handleChangeDate(e, "eind")}
               >
-                {machraJarenArray(Number(beginjaar)).map((jaar) => (
-                  <MenuItem key={jaar} value={jaar}>
-                    {jaar}
-                  </MenuItem>
-                ))}
+                {machraJaren.values
+                  .slice(machraJaren.values.indexOf(Number(beginjaar)))
+                  .map((jaar) => (
+                    <MenuItem key={jaar} value={jaar}>
+                      {jaar}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Stack>
