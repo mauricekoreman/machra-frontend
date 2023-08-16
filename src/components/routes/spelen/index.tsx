@@ -32,10 +32,12 @@ export const Spelen = () => {
       headerRight: isMachrabordActive && (
         <Stack direction={"row"} alignItems={"center"} gap={0.5} onClick={() => setModalOpen(true)}>
           <StopIcon size={21} color='orangered' />
-          <Typography color='orangered'>Stop spel</Typography>
+          <Typography color='orangered'>Stop ding</Typography>
         </Stack>
       ),
     });
+
+    console.log({ isMachrabordActive, gameState });
   }, [headerOptions, isMachrabordActive]);
 
   function displayGameState() {
@@ -98,6 +100,8 @@ export const Spelen = () => {
     </>
   );
 };
+
+
 
 
 

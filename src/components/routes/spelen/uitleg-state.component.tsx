@@ -45,14 +45,8 @@ export const UitlegState = () => (
       <ListItem>
         Op deze manier hebben alle verhalen een even grote kans om in het spel te komen.
       </ListItem>
-      <ListItem>
-        Klik op{" "}
-        <Codeblock>
-          <NewStoryIcon size={"1.2em"} />
-        </Codeblock>{" "}
-        om het eerste verhaal op te halen!
-      </ListItem>
     </StyledList>
   </Box>
 );
+
 
