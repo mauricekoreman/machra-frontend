@@ -32,6 +32,7 @@ import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
 import { Button } from "../../lib/button/button.component";
 import { Modal } from "../../lib/modal/modal.component";
 import { Verhaal as IVerhaal } from "../verhalen/verhalen.component";
+import { shouldStoryBeActive } from "./active-verhaal";
 
 interface IModalData {
   open: boolean;
@@ -66,7 +67,7 @@ export const EditVerhaal = () => {
       const verhaalState: PostVerhaal = {
         title: titelRef.current.value,
         description: descRef.current.value,
-        active: true,
+        active: shouldStoryBeActive(jaarGebeurtenis),
         year_of_story: jaarGebeurtenis,
       };
 
