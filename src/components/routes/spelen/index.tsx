@@ -36,8 +36,6 @@ export const Spelen = () => {
         </Stack>
       ),
     });
-
-    console.log({ isMachrabordActive, gameState });
   }, [headerOptions, isMachrabordActive]);
 
   function displayGameState() {
@@ -100,6 +98,7 @@ export const Spelen = () => {
     </>
   );
 };
+
 
 
 
