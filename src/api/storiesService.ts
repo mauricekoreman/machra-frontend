@@ -7,7 +7,7 @@ import { accessTokenKey } from "../contants";
 const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
 
 export async function httpGetStoryById(id: string) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     const response = await axios.get(`${API_URL}/${id}`, {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
@@ -40,7 +40,7 @@ interface HttpGetStories {
 export type GetStoriesParams = HttpGetStories["params"];
 
 export async function httpGetStories({ params = {} }: HttpGetStories) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     const response = await axios.get(`${API_URL}`, {
       params: params,
@@ -68,7 +68,7 @@ export interface PostVerhaal {
 }
 
 export async function httpPostStory(story: PostVerhaal) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     const response = await axios.post(`${API_URL}`, story, {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
@@ -90,7 +90,7 @@ export async function httpPostStory(story: PostVerhaal) {
 type UpdateVerhaal = Partial<PostVerhaal>;
 
 export async function httpPatchStory(story: UpdateVerhaal, storyId: string) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     const response = await axios.patch(`${API_URL}/${storyId}`, story, {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
@@ -111,7 +111,7 @@ export async function httpPatchStory(story: UpdateVerhaal, storyId: string) {
 }
 
 export async function httpDeleteStory(storyId: string) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     const response = await axios.delete(`${API_URL}/${storyId}`, {
       headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },

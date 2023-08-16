@@ -22,7 +22,7 @@ export async function httpSignin(userData: ILogin) {
         "Content-Type": "application/json",
       },
     });
-    sessionStorage.setItem(accessTokenKey, response.data.accessToken);
+    localStorage.setItem(accessTokenKey, response.data.accessToken);
     return { data: response.data.roles };
   } catch (error: any) {
     if (!error.response) {
@@ -44,7 +44,7 @@ export interface ICreateNewUser {
 }
 
 export async function httpCreateUser(userData: ICreateNewUser) {
-  const accessToken = sessionStorage.getItem(accessTokenKey);
+  const accessToken = localStorage.getItem(accessTokenKey);
   try {
     await axios.post(`${API_URL}/admin/create-user`, userData, {
       headers: {

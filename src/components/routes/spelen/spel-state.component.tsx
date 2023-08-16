@@ -1,12 +1,4 @@
-import {
-  Box,
-  ButtonBase,
-  Button as MuiButton,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, ButtonBase, Button as MuiButton, Card, CardContent, Typography } from "@mui/material";
 import { machrabordTiles } from "../../../utils/machrabord-tiles";
 import { useState } from "react";
 import styled from "@emotion/styled";
@@ -20,12 +12,20 @@ import { Modal } from "../../lib/modal/modal.component";
 
 const Tile = styled(ButtonBase)`
   background-color: #e6eaebfc;
-  height: 50px;
-  width: 50px;
+  aspect-ratio: 1 / 1;
+  min-height: 50px;
+  align-content: stretch;
   display: grid;
   place-items: center;
   border-radius: 4px;
   cursor: pointer;
+`;
+
+const GridContainer = styled(Box)`
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 `;
 
 export const SpelState = () => {
@@ -81,13 +81,13 @@ export const SpelState = () => {
     </>
   ) : (
     <>
-      <Stack direction={"row"} gap={1} flexWrap={"wrap"}>
+      <GridContainer>
         {[...Array(63)].map((_, tileNumber) => (
           <Tile key={tileNumber + 1} onClick={() => getVerhaalOrNah(tileNumber + 1)}>
             <Typography variant='body2'>{tileNumber + 1}</Typography>
           </Tile>
         ))}
-      </Stack>
+      </GridContainer>
       <Modal open={modalOpen}>
         <Typography>Dit vak bevat geen verhalen!</Typography>
         <MuiButton onClick={() => setModalOpen(false)}>OK</MuiButton>
@@ -95,6 +95,52 @@ export const SpelState = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

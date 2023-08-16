@@ -30,14 +30,14 @@ function authReducer(state: typeof authInitialState, action: Action): IAuthState
   switch (action.type) {
     case "signin": {
       const userObj = { roles: action.payload };
-      sessionStorage.setItem(userKey, JSON.stringify(userObj));
+      localStorage.setItem(userKey, JSON.stringify(userObj));
       return {
         user: userObj,
       };
     }
     case "signout":
-      sessionStorage.removeItem(accessTokenKey);
-      sessionStorage.removeItem(userKey);
+      localStorage.removeItem(accessTokenKey);
+      localStorage.removeItem(userKey);
       return {
         user: { roles: [] },
       };
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [state, dispatch] = useReducer(authReducer, authInitialState);
 
   useEffect(() => {
-    const userObj = sessionStorage.getItem(userKey);
+    const userObj = localStorage.getItem(userKey);
     const isUser = state.user.roles.length > 0 ? true : false;
 
     if (!isUser && userObj) {

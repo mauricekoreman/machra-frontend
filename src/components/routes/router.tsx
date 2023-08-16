@@ -17,7 +17,7 @@ import { accessTokenKey } from "../../contants";
 
 export const Router = () => {
   const { user } = useAuthState();
-  const isAuthenticated = sessionStorage.getItem(accessTokenKey) ? true : false;
+  const isAuthenticated = localStorage.getItem(accessTokenKey) ? true : false;
   const isAdmin = user.roles.includes("admin");
 
   const browserRouter = createBrowserRouter([
@@ -109,6 +109,7 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
 
 
 
