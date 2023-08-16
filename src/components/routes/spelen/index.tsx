@@ -32,7 +32,7 @@ export const Spelen = () => {
       headerRight: isMachrabordActive && (
         <Stack direction={"row"} alignItems={"center"} gap={0.5} onClick={() => setModalOpen(true)}>
           <StopIcon size={21} color='orangered' />
-          <Typography color='orangered'>Stop ding</Typography>
+          <Typography color='orangered'>Stop spel</Typography>
         </Stack>
       ),
     });
@@ -100,6 +100,7 @@ export const Spelen = () => {
     </>
   );
 };
+
 
 
 
