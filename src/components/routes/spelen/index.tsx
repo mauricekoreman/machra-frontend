@@ -29,15 +29,13 @@ export const Spelen = () => {
 
   useEffect(() => {
     headerOptions({
-      headerRight: isMachrabordActive && (
+      headerRight: isMachrabordActive ? (
         <Stack direction={"row"} alignItems={"center"} gap={0.5} onClick={() => setModalOpen(true)}>
           <StopIcon size={21} color='orangered' />
           <Typography color='orangered'>Stop spel</Typography>
         </Stack>
-      ),
+      ) : null,
     });
-
-    console.log({ isMachrabordActive, gameState });
   }, [headerOptions, isMachrabordActive]);
 
   function displayGameState() {
