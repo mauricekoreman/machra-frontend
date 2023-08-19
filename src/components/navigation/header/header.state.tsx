@@ -1,4 +1,11 @@
-import { Dispatch, createContext, useCallback, useContext, useEffect, useReducer } from "react";
+import {
+  Dispatch,
+  createContext,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useReducer,
+} from "react";
 import { useLocation } from "react-router-dom";
 
 interface IHeaderState {
@@ -56,9 +63,9 @@ const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const location = useLocation();
 
   // Turns state back to initial, to make sure headerOptions({}) does not persist on route change
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch({ type: "changeValues", payload: initialState });
-  }, [dispatch, location.pathname]);
+  }, [location.pathname]);
 
   return (
     <HeaderStateContext.Provider value={state}>
@@ -72,7 +79,10 @@ export function useHeader() {
 
   const headerOptions = useCallback(
     ({ headerTitle, headerLeft, headerRight }: IHeaderState) => {
-      dispatch({ type: "changeValues", payload: { headerTitle, headerLeft, headerRight } });
+      dispatch({
+        type: "changeValues",
+        payload: { headerTitle, headerLeft, headerRight },
+      });
     },
     [dispatch]
   );
@@ -81,5 +91,4 @@ export function useHeader() {
 }
 
 export { HeaderProvider };
-
 
