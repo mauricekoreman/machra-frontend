@@ -19,7 +19,7 @@ export interface Verhaal {
 
 export const Verhalen = () => {
   const { verhalen, setVerhalen } = useVerhalenState();
-  const [loadingFilters, setLoadingFilters] = useState(false);
+  const [loadingFilters, setLoadingFilters] = useState(true);
 
   const navigate = useNavigate();
 

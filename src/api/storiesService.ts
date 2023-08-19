@@ -34,6 +34,8 @@ interface HttpGetStories {
     search?: string;
     date1?: number;
     date2?: number;
+    limit?: number;
+    offset?: number;
   };
 }
 
