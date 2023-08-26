@@ -42,16 +42,16 @@ const FilterButton = styled(ButtonBase)<{ showbubble: boolean | undefined }>`
 `;
 
 interface Props {
-  getData: (params?: GetStoriesParams) => Promise<void>;
+  getData: (params?: GetStoriesParams) => void;
 }
 
 export const SearchWithFilter = ({ getData }: Props) => {
   const [showFilters, setShowFilters] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [beginjaar, setBeginjaar] = useState("");
-  const [eindjaar, setEindjaar] = useState("");
+  const [beginjaar, setBeginjaar] = useState("mount");
+  const [eindjaar, setEindjaar] = useState("mount");
 
-  const areFiltersSet = Boolean(beginjaar);
+  const areFiltersSet = Boolean(beginjaar) && beginjaar !== "mount";
 
   const machraJaren = useMemo(() => machraJarenObj(), []);
 
@@ -64,8 +64,8 @@ export const SearchWithFilter = ({ getData }: Props) => {
   function handleSearch(e?: React.FormEvent) {
     e?.preventDefault();
 
-    const date1 = beginjaar === "" ? undefined : Number(beginjaar);
-    const date2 = eindjaar === "" ? undefined : Number(eindjaar);
+    const date1 = beginjaar === "" || beginjaar === "mount" ? undefined : Number(beginjaar);
+    const date2 = eindjaar === "" || eindjaar === "mount" ? undefined : Number(eindjaar);
     const search = searchRef.current?.value;
 
     getData({ date1, date2, search });
@@ -77,7 +77,11 @@ export const SearchWithFilter = ({ getData }: Props) => {
   }
 
   useEffect(() => {
-    handleSearch();
+    // should only happen on a change, not on first render.
+    // can only happen when jaren are a number or have an empty string
+    if (beginjaar !== "mount" || eindjaar !== "mount") {
+      handleSearch();
+    }
     // eslint-disable-next-line
   }, [beginjaar, eindjaar]);
 
@@ -104,7 +108,7 @@ export const SearchWithFilter = ({ getData }: Props) => {
               <Select
                 size='small'
                 labelId='beginjaar-label'
-                value={beginjaar}
+                value={beginjaar === "mount" ? "" : beginjaar}
                 label='Beginjaar'
                 onChange={(e) => handleChangeDate(e, "begin")}
               >
@@ -123,7 +127,7 @@ export const SearchWithFilter = ({ getData }: Props) => {
               <Select
                 size='small'
                 labelId='eindjaar-label'
-                value={eindjaar}
+                value={eindjaar === "mount" ? "" : eindjaar}
                 label='Eindjaar'
                 onChange={(e) => handleChangeDate(e, "eind")}
               >

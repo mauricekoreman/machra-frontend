@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Header } from "../../navigation/header";
 import { machraJarenObj } from "../../../utils/machrajaren";
 import {
@@ -33,6 +33,8 @@ import { Button } from "../../lib/button/button.component";
 import { Modal } from "../../lib/modal/modal.component";
 import { Verhaal as IVerhaal } from "../verhalen/verhalen.component";
 import { shouldStoryBeActive } from "./active-verhaal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 interface IModalData {
   open: boolean;
@@ -48,7 +50,6 @@ export const EditVerhaal = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
   const authDispatch = useAuthDispatch();
-  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modalData, setModalData] = useState<IModalData>({} as IModalData);
 
@@ -62,6 +63,37 @@ export const EditVerhaal = () => {
 
   const machraJaren = useMemo(() => machraJarenObj(), []);
 
+  const queryClient = useQueryClient();
+
+  const {
+    mutate: postStory,
+    isLoading: isPostLoading,
+    isSuccess: isPostSuccess,
+    error: postError,
+  } = useMutation(httpPostStory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["infinite-verhalen"], { refetchType: "all" });
+    },
+  });
+
+  const {
+    mutate: patchStory,
+    isLoading: isPatchLoading,
+    isSuccess: isPatchSuccess,
+    error: patchError,
+  } = useMutation(httpPatchStory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["infinite-verhalen"], { refetchType: "all" });
+    },
+  });
+
+  const {
+    mutate: deleteStory,
+    isLoading: isDeleteLoading,
+    isSuccess: isDeleteSuccess,
+    error: deleteError,
+  } = useMutation(httpDeleteStory);
+
   async function submit() {
     if (titelRef.current && descRef.current && !isNaN(jaarGebeurtenis) && user.roles.length > 0) {
       const verhaalState: PostVerhaal = {
@@ -71,41 +103,45 @@ export const EditVerhaal = () => {
         year_of_story: jaarGebeurtenis,
       };
 
-      setLoading(true);
-      let response;
       if (state === null) {
-        response = await httpPostStory(verhaalState);
+        postStory(verhaalState);
       } else {
-        response = await httpPatchStory(verhaalState, verhaalId as string);
+        patchStory({ story: verhaalState, storyId: verhaalId as string });
       }
 
-      if (response?.data) {
-        navigate(-1);
-      }
-
-      if (response?.error) {
-        if (response.error.code === 401) {
-          authDispatch({ type: "signout" });
-        }
-        setErrorMessage("Something went wrong...");
-        setLoading(false);
-      }
+      closeModal();
     }
   }
 
-  async function deleteVerhaal() {
-    const { data, error } = await httpDeleteStory(verhaalId as string);
+  useEffect(() => {
+    if (isPostSuccess || isPatchSuccess) {
+      navigate(-1);
+    }
 
-    if (data?.status === 200) {
+    if (isDeleteSuccess) {
       navigate("/");
     }
 
-    if (error) {
-      if (error.code === 401) {
+    if (postError || patchError || deleteError) {
+      if ((postError as AxiosError).response?.status === 401) {
         authDispatch({ type: "signout" });
       }
       setErrorMessage("Something went wrong...");
     }
+  }, [
+    isPostSuccess,
+    postError,
+    authDispatch,
+    setErrorMessage,
+    navigate,
+    patchError,
+    isPatchSuccess,
+    deleteError,
+    isDeleteSuccess,
+  ]);
+
+  async function deleteVerhaal() {
+    deleteStory(verhaalId as string);
   }
 
   function handleChangeActive(e: SelectChangeEvent) {
@@ -199,14 +235,14 @@ export const EditVerhaal = () => {
           <Button
             title={state === null ? "Upload verhaal" : "Update verhaal"}
             type='submit'
-            loading={loading}
+            loading={isPostLoading || isPatchLoading || isDeleteLoading}
           />
           {isAdmin && state !== null && (
             <Button
               title={"Verwijder verhaal"}
               type='button'
               color='error'
-              loading={loading}
+              loading={isPostLoading || isPatchLoading || isDeleteLoading}
               onClick={() =>
                 setModalData({
                   open: true,

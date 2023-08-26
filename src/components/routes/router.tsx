@@ -4,7 +4,6 @@ import { NotFound } from "./not-found/not-found.component";
 import { Regels } from "./regels/regels.component";
 import { Verhalen } from "./verhalen/verhalen.component";
 import { EditVerhaal } from "./edit-verhaal/edit-verhaal.component";
-import { TestPage } from "./test/test";
 import { Spelen } from "./spelen";
 import { Verhaal } from "./verhaal/verhaal.component";
 import { Root } from "./root/root.component";
@@ -45,10 +44,6 @@ export const Router = () => {
             {
               path: "regels",
               element: <Regels />,
-            },
-            {
-              path: "test",
-              element: <TestPage />,
             },
             {
               path: "admin",

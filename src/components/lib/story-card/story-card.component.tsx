@@ -26,6 +26,7 @@ export const StoryCard: React.FC<{
         pt: 0.5,
         overflowY: "auto",
         WebkitOverflowScrolling: "touch",
+        height: "100%",
       }}
       variant='outlined'
     >

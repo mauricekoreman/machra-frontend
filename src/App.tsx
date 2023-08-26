@@ -5,17 +5,25 @@ import { MachrabordProvider } from "./components/state/machrabord/machrabord.pro
 import { AuthProvider } from "./components/state/auth/auth.provider";
 import { VerhalenProvider } from "./components/state/machrabord/verhalen.provider";
 
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 function App() {
+  const queryClient = new QueryClient();
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
-        <VerhalenProvider>
-          <MachrabordProvider>
-            <Router />
-          </MachrabordProvider>
-        </VerhalenProvider>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <VerhalenProvider>
+            <MachrabordProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Router />
+            </MachrabordProvider>
+          </VerhalenProvider>
+        </AuthProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

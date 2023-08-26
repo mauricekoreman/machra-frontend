@@ -8,23 +8,11 @@ const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
 
 export async function httpGetStoryById(id: string) {
   const accessToken = localStorage.getItem(accessTokenKey);
-  try {
-    const response = await axios.get(`${API_URL}/${id}`, {
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    });
+  const response = await axios.get(`${API_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
 
-    return { data: response.data as Verhaal };
-  } catch (error: any) {
-    if (!error.response) {
-      return {
-        error: { message: "Internal server error", code: 500 },
-      };
-    }
-
-    return {
-      error: { message: error.response.data.message, code: error.response.data.statusCode },
-    };
-  }
+  return response.data as Verhaal;
 }
 
 interface HttpGetStories {
@@ -35,31 +23,26 @@ interface HttpGetStories {
     date1?: number;
     date2?: number;
     limit?: number;
-    offset?: number;
+    page?: number;
   };
 }
 
 export type GetStoriesParams = HttpGetStories["params"];
 
+export interface HttpGetStoriesResponse {
+  currentPage: number;
+  items: Verhaal[];
+  totalItems: number;
+  totalPages: number;
+}
+
 export async function httpGetStories({ params = {} }: HttpGetStories) {
   const accessToken = localStorage.getItem(accessTokenKey);
-  try {
-    const response = await axios.get(`${API_URL}`, {
-      params: params,
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    });
-    return { data: response.data as Verhaal[] };
-  } catch (error: any) {
-    if (!error.response) {
-      return {
-        error: { message: "Internal server error", code: 500 },
-      };
-    }
-
-    return {
-      error: { message: error.response.data.message, code: error.response.data.statusCode },
-    };
-  }
+  const response = await axios.get(API_URL, {
+    params: params,
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
+  return response.data;
 }
 
 export interface PostVerhaal {
@@ -71,64 +54,32 @@ export interface PostVerhaal {
 
 export async function httpPostStory(story: PostVerhaal) {
   const accessToken = localStorage.getItem(accessTokenKey);
-  try {
-    const response = await axios.post(`${API_URL}`, story, {
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    });
-    return { data: response.data as Verhaal };
-  } catch (error: any) {
-    if (!error.response) {
-      return {
-        error: { message: "Internal server error", code: 500 },
-      };
-    }
-
-    return {
-      error: { message: error.response.data.message, code: error.response.data.statusCode },
-    };
-  }
+  const response = await axios.post(`${API_URL}`, story, {
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
+  return response.data as Verhaal;
 }
 
 type UpdateVerhaal = Partial<PostVerhaal>;
 
-export async function httpPatchStory(story: UpdateVerhaal, storyId: string) {
+export async function httpPatchStory({
+  story,
+  storyId,
+}: {
+  story: UpdateVerhaal;
+  storyId: string;
+}) {
   const accessToken = localStorage.getItem(accessTokenKey);
-  try {
-    const response = await axios.patch(`${API_URL}/${storyId}`, story, {
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    });
-
-    return { data: response.data as Verhaal };
-  } catch (error: any) {
-    if (!error.response) {
-      return {
-        error: { message: "Internal server error", code: 500 },
-      };
-    }
-
-    return {
-      error: { message: error.response.data.message, code: error.response.data.statusCode },
-    };
-  }
+  const response = await axios.patch(`${API_URL}/${storyId}`, story, {
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
+  return response.data as Verhaal;
 }
 
 export async function httpDeleteStory(storyId: string) {
   const accessToken = localStorage.getItem(accessTokenKey);
-  try {
-    const response = await axios.delete(`${API_URL}/${storyId}`, {
-      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    });
-
-    return { data: response };
-  } catch (error: any) {
-    if (!error.response) {
-      return {
-        error: { message: "Internal server error", code: 500 },
-      };
-    }
-
-    return {
-      error: { message: error.response.data.message, code: error.response.data.statusCode },
-    };
-  }
+  const response = await axios.delete(`${API_URL}/${storyId}`, {
+    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+  });
+  return response.data;
 }
