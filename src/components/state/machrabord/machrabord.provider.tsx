@@ -5,13 +5,14 @@ import { randomNumber } from "../../../utils/random-number";
 type MachrabordReducerActions =
   | "start"
   | "stop"
+  | "acceptVerhaal"
   | "getVerhaal"
-  | "rejectVerhaal"
   | "changeGameState";
 
 interface IMachrabordState {
   isMachrabordActive: boolean;
-  machrabordVerhalen: Verhaal[];
+  allFetchedMachrabordVerhalen: Verhaal[];
+  inGameMachrabordVerhalen: Verhaal[];
   activeVerhaal: Verhaal | null;
   gameState: "uitleg" | "filterSettings" | "spel" | "einde";
 }
@@ -31,7 +32,8 @@ type Action =
 
 const machrabordInitialState: IMachrabordState = {
   isMachrabordActive: false,
-  machrabordVerhalen: [],
+  allFetchedMachrabordVerhalen: [],
+  inGameMachrabordVerhalen: [],
   activeVerhaal: null,
   gameState: "filterSettings",
 };
@@ -43,7 +45,8 @@ function machrabordReducer(state: typeof machrabordInitialState, action: Action)
       return {
         ...state,
         isMachrabordActive: true,
-        machrabordVerhalen: verhalen,
+        inGameMachrabordVerhalen: verhalen,
+        allFetchedMachrabordVerhalen: verhalen,
         gameState: "uitleg",
       };
     }
@@ -54,23 +57,20 @@ function machrabordReducer(state: typeof machrabordInitialState, action: Action)
         activeVerhaal: null,
         gameState: "filterSettings",
       };
-    case "getVerhaal": {
+    case "acceptVerhaal": {
       // remove active verhaal from list
-      let verhalenList = state.machrabordVerhalen;
-      const activeVerhaal = verhalenList[randomNumber(verhalenList.length)];
-      verhalenList = state.machrabordVerhalen.filter((verhaal) => verhaal !== activeVerhaal);
-
       return {
         ...state,
-        machrabordVerhalen: verhalenList,
-        activeVerhaal: activeVerhaal,
-        gameState: "spel",
+        inGameMachrabordVerhalen: state.inGameMachrabordVerhalen.filter(
+          (verhaal) => verhaal !== state.activeVerhaal
+        ),
       };
     }
-    case "rejectVerhaal": {
+    case "getVerhaal": {
       return {
         ...state,
-        activeVerhaal: state.machrabordVerhalen[randomNumber(state.machrabordVerhalen.length)],
+        activeVerhaal:
+          state.inGameMachrabordVerhalen[randomNumber(state.inGameMachrabordVerhalen.length)],
       };
     }
     case "changeGameState": {
@@ -117,22 +117,3 @@ export const useMachrabordDispatch = () => {
 
   return context;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Container,
   FormControl,
@@ -7,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -35,6 +33,7 @@ import { Verhaal as IVerhaal } from "../verhalen/verhalen.component";
 import { shouldStoryBeActive } from "./active-verhaal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 interface IModalData {
   open: boolean;
@@ -50,7 +49,6 @@ export const EditVerhaal = () => {
   const navigate = useNavigate();
   const { user } = useAuthState();
   const authDispatch = useAuthDispatch();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [modalData, setModalData] = useState<IModalData>({} as IModalData);
 
   const titelRef = useRef<HTMLInputElement>(null);
@@ -92,7 +90,11 @@ export const EditVerhaal = () => {
     isLoading: isDeleteLoading,
     isSuccess: isDeleteSuccess,
     error: deleteError,
-  } = useMutation(httpDeleteStory);
+  } = useMutation(httpDeleteStory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["infinite-verhalen"], { refetchType: "all" });
+    },
+  });
 
   async function submit() {
     if (titelRef.current && descRef.current && !isNaN(jaarGebeurtenis) && user.roles.length > 0) {
@@ -126,13 +128,12 @@ export const EditVerhaal = () => {
       if ((postError as AxiosError).response?.status === 401) {
         authDispatch({ type: "signout" });
       }
-      setErrorMessage("Something went wrong...");
+      toast("Something went wrong...", { type: "error" });
     }
   }, [
     isPostSuccess,
     postError,
     authDispatch,
-    setErrorMessage,
     navigate,
     patchError,
     isPatchSuccess,
@@ -154,6 +155,8 @@ export const EditVerhaal = () => {
       open: false,
     });
   }
+
+  const isLoading = isPatchLoading || isDeleteLoading || isPostLoading;
 
   return (
     <>
@@ -186,6 +189,7 @@ export const EditVerhaal = () => {
             defaultValue={title ?? ""}
             fullWidth
             required
+            disabled={isLoading}
           />
           <TextField
             inputRef={descRef}
@@ -197,8 +201,9 @@ export const EditVerhaal = () => {
             multiline
             fullWidth
             minRows={4}
+            disabled={isLoading}
           />
-          <FormControl required>
+          <FormControl required disabled={isLoading}>
             <InputLabel id='jaar_gebeurtenis'>Jaar van gebeurtenis</InputLabel>
             <Select
               labelId='jaar_gebeurtenis'
@@ -223,11 +228,13 @@ export const EditVerhaal = () => {
                 value={true}
                 label='Aan actief Machrabord toevoegen'
                 control={<Radio />}
+                disabled={isLoading}
               />
               <FormControlLabel
                 value={false}
                 label='Niet in actief Machrabord'
                 control={<Radio />}
+                disabled={isLoading}
               />
             </RadioGroup>
           )}
@@ -235,14 +242,14 @@ export const EditVerhaal = () => {
           <Button
             title={state === null ? "Upload verhaal" : "Update verhaal"}
             type='submit'
-            loading={isPostLoading || isPatchLoading || isDeleteLoading}
+            loading={isLoading}
           />
           {isAdmin && state !== null && (
             <Button
               title={"Verwijder verhaal"}
               type='button'
               color='error'
-              loading={isPostLoading || isPatchLoading || isDeleteLoading}
+              loading={isLoading}
               onClick={() =>
                 setModalData({
                   open: true,
@@ -264,16 +271,6 @@ export const EditVerhaal = () => {
           <MuiButton onClick={modalData.onClickBevestig}>Bevestig</MuiButton>
         </Stack>
       </Modal>
-      <Snackbar
-        anchorOrigin={{ horizontal: "center", vertical: "top" }}
-        open={Boolean(errorMessage)}
-        autoHideDuration={2000}
-        onClose={() => setErrorMessage(null)}
-      >
-        <Alert sx={{ width: "100%" }} severity='error'>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

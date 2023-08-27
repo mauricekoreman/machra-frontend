@@ -2,14 +2,13 @@ import axios from "axios";
 import { Verhaal } from "../components/routes/verhalen/verhalen.component";
 import { accessTokenKey } from "../contants";
 
-// const API_URL = "http://localhost:3000/stories";
 // @ts-ignore Property 'env' does not exist on type 'ImportMeta'
 const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
 
 export async function httpGetStoryById(id: string) {
   const accessToken = localStorage.getItem(accessTokenKey);
   const response = await axios.get(`${API_URL}/${id}`, {
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   return response.data as Verhaal;
@@ -40,9 +39,14 @@ export async function httpGetStories({ params = {} }: HttpGetStories) {
   const accessToken = localStorage.getItem(accessTokenKey);
   const response = await axios.get(API_URL, {
     params: params,
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
-  return response.data;
+  return response.data as {
+    currentPage: number;
+    items: Verhaal[];
+    totalItems: number;
+    totalPages: number;
+  };
 }
 
 export interface PostVerhaal {
@@ -55,7 +59,7 @@ export interface PostVerhaal {
 export async function httpPostStory(story: PostVerhaal) {
   const accessToken = localStorage.getItem(accessTokenKey);
   const response = await axios.post(`${API_URL}`, story, {
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data as Verhaal;
 }
@@ -71,7 +75,7 @@ export async function httpPatchStory({
 }) {
   const accessToken = localStorage.getItem(accessTokenKey);
   const response = await axios.patch(`${API_URL}/${storyId}`, story, {
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data as Verhaal;
 }
@@ -79,7 +83,7 @@ export async function httpPatchStory({
 export async function httpDeleteStory(storyId: string) {
   const accessToken = localStorage.getItem(accessTokenKey);
   const response = await axios.delete(`${API_URL}/${storyId}`, {
-    headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data;
 }

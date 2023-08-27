@@ -1,4 +1,4 @@
-import { Alert, Box, Container, IconButton, Skeleton, Snackbar, Typography } from "@mui/material";
+import { Box, Container, IconButton, Skeleton, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../navigation/header";
 import { MdArrowBack as BackIcon } from "react-icons/md";
@@ -8,6 +8,8 @@ import { httpGetStoryById } from "../../../api/storiesService";
 import { useAuthState } from "../../state/auth/auth.provider";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { Error } from "../../../api/apiTypes";
 
 export const Verhaal = () => {
   const { user } = useAuthState();
@@ -27,6 +29,10 @@ export const Verhaal = () => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
+
+  if (error instanceof AxiosError) {
+    toast((error.response?.data as Error).message, { type: "error" });
+  }
 
   return (
     <>
@@ -67,15 +73,6 @@ export const Verhaal = () => {
           )}
         </Box>
       </Container>
-      <Snackbar
-        anchorOrigin={{ horizontal: "center", vertical: "top" }}
-        open={Boolean(error)}
-        autoHideDuration={2000}
-      >
-        <Alert sx={{ width: "100%" }} severity='error'>
-          {error ? (error as AxiosError).message : ""}
-        </Alert>
-      </Snackbar>
     </>
   );
 };
