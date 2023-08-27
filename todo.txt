@@ -1,3 +1,0 @@
-4. fix scroll restoration
-
-5. make authService with react query

@@ -9,8 +9,11 @@ export const useInfiniteVerhalen = () => {
   return useInfiniteQuery({
     queryKey: ["infinite-verhalen"],
     staleTime: 60000,
+    refetchOnWindowFocus: false,
     queryFn: async ({ pageParam = 1 }) => {
-      return await httpGetStories({ params: { page: pageParam, limit: 10 } });
+      return await httpGetStories({
+        params: { page: pageParam, limit: 20, withAlwaysActiveStories: true },
+      });
     },
     getNextPageParam: (lastPage) => {
       if (lastPage === undefined || lastPage.currentPage === lastPage.totalPages) {

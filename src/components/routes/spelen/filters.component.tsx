@@ -45,7 +45,8 @@ export const MachrabordFilters = () => {
     error,
   } = useQuery({
     queryKey: ["machrabord-verhalen", filters],
-    queryFn: async () => await httpGetStories({ params: filters }),
+    queryFn: async () =>
+      await httpGetStories({ params: { ...filters, withAlwaysActiveStories: true } }),
     enabled: Object.keys(filters).length > 0,
   });
 

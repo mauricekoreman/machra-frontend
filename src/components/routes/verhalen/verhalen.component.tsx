@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Container, Fab, Skeleton, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Fab, Skeleton } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
@@ -12,6 +12,8 @@ import { useInfiniteVerhalen } from "../../../hooks/useInfiniteVerhalen";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthDispatch } from "../../state/auth/auth.provider";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 export interface Verhaal {
   id: string;
@@ -39,7 +41,11 @@ export const Verhalen = () => {
   } = useInfiniteVerhalen();
 
   const [query, setQuery] = useState<GetStoriesParams>({});
-  const isSearchActive = Boolean(query?.date1 || query?.date2 || query?.search);
+  const debouncedQuery = useDebounce(query, 300) as GetStoriesParams;
+
+  const isSearchActive = Boolean(
+    debouncedQuery?.date1 || debouncedQuery?.date2 || debouncedQuery?.search
+  );
 
   // Getting stories based on search params
   const {
@@ -48,11 +54,11 @@ export const Verhalen = () => {
     error: searchError,
     isFetching: isFetchingSearch,
   } = useQuery({
-    queryKey: ["searchVerhalen", query],
+    queryKey: ["searchVerhalen", debouncedQuery],
     enabled: isSearchActive,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-    queryFn: async () => await httpGetStories({ params: query }),
+    queryFn: async () => await httpGetStories({ params: debouncedQuery }),
     retry: (failureCount, error) => {
       if ((error as AxiosError).response?.status === 401) {
         authDispatch({ type: "signout" });
@@ -78,6 +84,12 @@ export const Verhalen = () => {
     }
   }, [infiniteVerhalen, searchVerhalen, query, isLoadingSearch, isSearchActive]);
 
+  useEffect(() => {
+    if (infiniteError || searchError) {
+      toast("Something went wrong...", { type: "error" });
+    }
+  }, [infiniteError, searchError]);
+
   return (
     <Container
       component='main'
@@ -88,7 +100,7 @@ export const Verhalen = () => {
         paddingBottom: 3,
       }}
     >
-      <SearchWithFilter getData={(search) => setQuery(search)} />
+      <SearchWithFilter setSearch={setQuery} />
       <Box
         sx={{
           mt: 3,
@@ -99,8 +111,7 @@ export const Verhalen = () => {
         }}
       >
         {infiniteError || searchError ? (
-          // todo: display notification
-          <Typography variant='body1'>Error!</Typography>
+          <></>
         ) : !isInitialLoading && !isFetchingSearch ? (
           allFetchedStories.map((verhaal, i) => {
             if (allFetchedStories.length === i + 1 && !isSearchActive) {

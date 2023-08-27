@@ -42,12 +42,13 @@ const FilterButton = styled(ButtonBase)<{ showbubble: boolean | undefined }>`
 `;
 
 interface Props {
-  getData: (params?: GetStoriesParams) => void;
+  setSearch: (params?: GetStoriesParams) => void;
 }
 
-export const SearchWithFilter = ({ getData }: Props) => {
+export const SearchWithFilter = ({ setSearch }: Props) => {
   const [showFilters, setShowFilters] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
+
+  const [searchInput, setSearchInput] = useState("");
   const [beginjaar, setBeginjaar] = useState("mount");
   const [eindjaar, setEindjaar] = useState("mount");
 
@@ -61,34 +62,30 @@ export const SearchWithFilter = ({ getData }: Props) => {
       : setEindjaar(e.target.value as string);
   }
 
-  function handleSearch(e?: React.FormEvent) {
-    e?.preventDefault();
-
-    const date1 = beginjaar === "" || beginjaar === "mount" ? undefined : Number(beginjaar);
-    const date2 = eindjaar === "" || eindjaar === "mount" ? undefined : Number(eindjaar);
-    const search = searchRef.current?.value;
-
-    getData({ date1, date2, search });
-  }
-
   function clearFilters() {
     setBeginjaar("");
     setEindjaar("");
   }
 
+  // useEffect that skips the inital render!
+  const isInitialRender = useRef(true);
   useEffect(() => {
-    // should only happen on a change, not on first render.
-    // can only happen when jaren are a number or have an empty string
-    if (beginjaar !== "mount" || eindjaar !== "mount") {
-      handleSearch();
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
     }
-    // eslint-disable-next-line
-  }, [beginjaar, eindjaar]);
+
+    const date1 = beginjaar === "" || beginjaar === "mount" ? undefined : Number(beginjaar);
+    const date2 = eindjaar === "" || eindjaar === "mount" ? undefined : Number(eindjaar);
+    const withAlwaysActiveStories = Boolean(searchInput) && Boolean(!date1) && Boolean(!date2);
+
+    setSearch({ search: searchInput, date1, date2, withAlwaysActiveStories });
+  }, [searchInput, beginjaar, eindjaar, setSearch]);
 
   return (
     <Box>
-      <Stack component={"form"} direction={"row"} spacing={1} onSubmit={handleSearch}>
-        <Searchbar inputRef={searchRef} />
+      <Stack component={"form"} direction={"row"} spacing={1}>
+        <Searchbar handleChange={(e) => setSearchInput(e.target.value)} />
         <FilterButton
           showbubble={areFiltersSet ? areFiltersSet : undefined}
           onClick={() => setShowFilters((prevState) => !prevState)}

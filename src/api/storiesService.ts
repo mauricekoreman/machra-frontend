@@ -21,6 +21,7 @@ interface HttpGetStories {
     search?: string;
     date1?: number;
     date2?: number;
+    withAlwaysActiveStories?: boolean;
     limit?: number;
     page?: number;
   };
