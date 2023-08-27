@@ -3,7 +3,7 @@ import { Outlet, ScrollRestoration } from "react-router-dom";
 
 export const Root: React.FC = () => (
   <Box>
-    <ScrollRestoration />
+    {/* <ScrollRestoration /> */}
     <Outlet />
   </Box>
 );

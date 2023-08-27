@@ -1,12 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Container, Fab, Skeleton, Typography } from "@mui/material";
+import { Box, CircularProgress, Container, Fab, Skeleton } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
 import { SearchWithFilter } from "../../lib/searchbar";
-import { useVerhalenState } from "../../state/machrabord/verhalen.provider";
-import { useCallback, useEffect, useState } from "react";
-import { GetStoriesParams } from "../../../api/storiesService";
+import { useEffect, useState } from "react";
+import { GetStoriesParams, httpGetStories } from "../../../api/storiesService";
+
+import { useInView } from "react-intersection-observer";
+import { useInfiniteVerhalen } from "../../../hooks/useInfiniteVerhalen";
+import { useQuery } from "@tanstack/react-query";
+import { useAuthDispatch } from "../../state/auth/auth.provider";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import { useDebounce } from "../../../hooks/useDebounce";
 
 export interface Verhaal {
   id: string;
@@ -18,54 +25,108 @@ export interface Verhaal {
 }
 
 export const Verhalen = () => {
-  const { verhalen, setVerhalen } = useVerhalenState();
-  const [loadingFilters, setLoadingFilters] = useState(false);
-
   const navigate = useNavigate();
+  const { ref, inView } = useInView();
+  const authDispatch = useAuthDispatch();
+  const [allFetchedStories, setAllFetchedStories] = useState<Verhaal[]>([]);
 
-  const settingVerhalen = useCallback(
-    async (params?: GetStoriesParams) => {
-      setLoadingFilters(true);
-      setVerhalen(params).then(() => setLoadingFilters(false));
-    },
-    [setVerhalen]
+  // Getting all the stories on infinite scroll
+  const {
+    data: infiniteVerhalen,
+    error: infiniteError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    isInitialLoading,
+  } = useInfiniteVerhalen();
+
+  const [query, setQuery] = useState<GetStoriesParams>({});
+  const debouncedQuery = useDebounce(query, 300) as GetStoriesParams;
+
+  const isSearchActive = Boolean(
+    debouncedQuery?.date1 || debouncedQuery?.date2 || debouncedQuery?.search
   );
 
+  // Getting stories based on search params
+  const {
+    data: searchVerhalen,
+    isLoading: isLoadingSearch,
+    error: searchError,
+    isFetching: isFetchingSearch,
+  } = useQuery({
+    queryKey: ["searchVerhalen", debouncedQuery],
+    enabled: isSearchActive,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => await httpGetStories({ params: debouncedQuery }),
+    retry: (failureCount, error) => {
+      if ((error as AxiosError).response?.status === 401) {
+        authDispatch({ type: "signout" });
+      }
+      return failureCount < 3 ? true : false;
+    },
+  });
+
   useEffect(() => {
-    if (verhalen === null) {
-      settingVerhalen();
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
-  }, [settingVerhalen, verhalen]);
+  }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // Setting stories array based on if there is a search going on or not
+  useEffect(() => {
+    if (isSearchActive && !isLoadingSearch) {
+      setAllFetchedStories(searchVerhalen ? searchVerhalen.items : []);
+    } else {
+      setAllFetchedStories(
+        infiniteVerhalen ? infiniteVerhalen.pages.flatMap((obj) => obj?.items) : []
+      );
+    }
+  }, [infiniteVerhalen, searchVerhalen, query, isLoadingSearch, isSearchActive]);
+
+  useEffect(() => {
+    if (infiniteError || searchError) {
+      toast("Something went wrong...", { type: "error" });
+    }
+  }, [infiniteError, searchError]);
 
   return (
     <Container
       component='main'
       sx={{
+        flex: 1,
+        height: "100%",
         paddingTop: 2,
         paddingBottom: 3,
       }}
     >
-      <SearchWithFilter getData={settingVerhalen} />
+      <SearchWithFilter setSearch={setQuery} />
       <Box
         sx={{
-          display: "grid",
           mt: 3,
+          display: "grid",
           gap: 3,
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gridAutoFlow: "dense",
         }}
       >
-        {verhalen && !loadingFilters ? (
-          <>
-            {verhalen.map((data, index) => (
-              <StoryCard key={index} data={data} onClick={() => navigate(`/verhalen/${data.id}`)} />
-            ))}
-            {verhalen.length === 0 && (
-              <Typography fontSize={20} textAlign={"center"}>
-                Nog geen Machrabord verhalen!
-              </Typography>
-            )}
-          </>
+        {infiniteError || searchError ? (
+          <></>
+        ) : !isInitialLoading && !isFetchingSearch ? (
+          allFetchedStories.map((verhaal, i) => {
+            if (allFetchedStories.length === i + 1 && !isSearchActive) {
+              return (
+                <div ref={ref} key={verhaal.id}>
+                  <StoryCard data={verhaal} onClick={() => navigate(`/verhalen/${verhaal.id}`)} />
+                </div>
+              );
+            }
+            return (
+              <div key={verhaal.id}>
+                <StoryCard data={verhaal} onClick={() => navigate(`/verhalen/${verhaal.id}`)} />
+              </div>
+            );
+          })
         ) : (
           [...Array(3)].map((_, i) => (
             <Skeleton
@@ -76,6 +137,9 @@ export const Verhalen = () => {
               height={200}
             />
           ))
+        )}
+        {isFetchingNextPage && (
+          <CircularProgress style={{ display: "block", margin: "0 auto" }} size={30} />
         )}
       </Box>
       <Fab

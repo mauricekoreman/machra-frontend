@@ -13,12 +13,10 @@ import { useHeader } from "../../navigation/header";
 import { MdOutlineStopCircle as StopIcon } from "react-icons/md";
 import { SpelState } from "./spel-state.component";
 import { EindeState } from "./einde-state.component";
-import { useVerhalenState } from "../../state/machrabord/verhalen.provider";
 
 export const Spelen = () => {
-  const { isMachrabordActive, gameState } = useMachrabordState();
-  const dispatch = useMachrabordDispatch();
-  const { verhalen } = useVerhalenState();
+  const { isMachrabordActive, gameState, allFetchedMachrabordVerhalen } = useMachrabordState();
+  const machrabordDispatch = useMachrabordDispatch();
 
   const { headerOptions } = useHeader();
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,7 +28,13 @@ export const Spelen = () => {
   useEffect(() => {
     headerOptions({
       headerRight: isMachrabordActive ? (
-        <Stack direction={"row"} alignItems={"center"} gap={0.5} onClick={() => setModalOpen(true)}>
+        <Stack
+          sx={{ cursor: "pointer" }}
+          direction={"row"}
+          alignItems={"center"}
+          gap={0.5}
+          onClick={() => setModalOpen(true)}
+        >
           <StopIcon size={21} color='orangered' />
           <Typography color='orangered'>Stop spel</Typography>
         </Stack>
@@ -50,7 +54,7 @@ export const Spelen = () => {
             <Button
               sx={{ position: "fixed", bottom: 30 }}
               title='Start'
-              onClick={() => dispatch({ type: "changeGameState", payload: "spel" })}
+              onClick={() => machrabordDispatch({ type: "changeGameState", payload: "spel" })}
             />
           </>
         );
@@ -62,8 +66,10 @@ export const Spelen = () => {
       case "einde":
         return (
           <EindeState
-            onClickOpnieuw={() => dispatch({ type: "start", payload: verhalen! })}
-            onClickStoppen={() => dispatch({ type: "stop" })}
+            onClickOpnieuw={() =>
+              machrabordDispatch({ type: "start", payload: allFetchedMachrabordVerhalen })
+            }
+            onClickStoppen={() => machrabordDispatch({ type: "stop" })}
           />
         );
       default:
@@ -87,7 +93,7 @@ export const Spelen = () => {
           <MuiButton onClick={closeModal}>Annuleer</MuiButton>
           <MuiButton
             onClick={() => {
-              dispatch({ type: "stop" });
+              machrabordDispatch({ type: "stop" });
               closeModal();
             }}
           >
@@ -98,6 +104,7 @@ export const Spelen = () => {
     </>
   );
 };
+
 
 
 

@@ -21,6 +21,7 @@ import wapen from "../../../assets/wapen.png";
 import { theme } from "../../../theme";
 import { Header, HeaderProvider } from "../header";
 import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -56,6 +57,8 @@ export const DrawerNavigation: React.FC = () => {
   const { user } = useAuthState();
   const isAdmin = user.roles.includes("admin");
 
+  const queryClient = useQueryClient();
+
   const navItems = [
     {
       text: "Alle verhalen",
@@ -75,11 +78,6 @@ export const DrawerNavigation: React.FC = () => {
     ...(isAdmin
       ? [{ text: "Admin", href: "/admin", icon: <MdAdminPanelSettings size={iconSize} /> }]
       : []),
-    // {
-    //   text: "Test page",
-    //   href: "/test",
-    //   icon: <MdSettings />,
-    // },
   ];
 
   const currentLocation = useMemo(
@@ -140,7 +138,13 @@ export const DrawerNavigation: React.FC = () => {
                 </ListItem>
               ))}
             </List>
-            <Button sx={{ mt: "auto", mb: 2 }} onClick={() => authDispatch({ type: "signout" })}>
+            <Button
+              sx={{ mt: "auto", mb: 2 }}
+              onClick={() => {
+                queryClient.clear();
+                authDispatch({ type: "signout" });
+              }}
+            >
               Uitloggen
             </Button>
           </Drawer>

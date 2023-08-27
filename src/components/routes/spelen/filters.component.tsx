@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -14,20 +15,43 @@ import { Button } from "../../lib/button/button.component";
 import { useMemo, useState } from "react";
 import { machraJarenObj } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
-import { useVerhalenState } from "../../state/machrabord/verhalen.provider";
+import { useQuery } from "@tanstack/react-query";
+import { httpGetStories } from "../../../api/storiesService";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
+import { Error } from "../../../api/apiTypes";
+
+interface machrabordFilters {
+  date1: number | undefined;
+  date2: number | undefined;
+  active: boolean | undefined;
+}
 
 export const MachrabordFilters = () => {
-  const dispatch = useMachrabordDispatch();
-  const { setVerhalen } = useVerhalenState();
+  const machrabordDispatch = useMachrabordDispatch();
 
   const machraJaren = useMemo(() => machraJarenObj(), []);
 
-  const [activeOrDate, setActiveOrDate] = useState("active");
+  const [activeOrDate, setActiveOrDate] = useState<"active" | "date">("active");
   const [beginjaar, setBeginjaar] = useState("");
   const [eindjaar, setEindjaar] = useState("");
 
+  const [filters, setFilters] = useState<machrabordFilters>({} as machrabordFilters);
+
+  const {
+    data: machrabordVerhalen,
+    isFetching,
+    isSuccess,
+    error,
+  } = useQuery({
+    queryKey: ["machrabord-verhalen", filters],
+    queryFn: async () =>
+      await httpGetStories({ params: { ...filters, withAlwaysActiveStories: true } }),
+    enabled: Object.keys(filters).length > 0,
+  });
+
   function updateFilter(e: React.ChangeEvent<HTMLInputElement>) {
-    setActiveOrDate((e.target as HTMLInputElement).value);
+    setActiveOrDate((e.target as HTMLInputElement).value as "active" | "date");
   }
 
   function handleChangeDate(e: SelectChangeEvent, type: "begin" | "eind") {
@@ -41,8 +65,20 @@ export const MachrabordFilters = () => {
     const date2 = eindjaar === "" || activeOrDate === "active" ? undefined : Number(eindjaar);
     const active = activeOrDate === "active" ? true : undefined;
 
-    const verhalen = await setVerhalen({ date1, date2, active });
-    dispatch({ type: "start", payload: verhalen });
+    setFilters({ date1, date2, active });
+  }
+
+  if (
+    machrabordVerhalen?.items &&
+    machrabordVerhalen.items.length > 0 &&
+    isSuccess &&
+    Object.keys(filters).length > 0
+  ) {
+    machrabordDispatch({ type: "start", payload: machrabordVerhalen.items });
+  }
+
+  if (error instanceof AxiosError) {
+    toast((error.response?.data as Error).message, { type: "error" });
   }
 
   return (
@@ -57,7 +93,7 @@ export const MachrabordFilters = () => {
       <Typography sx={{ mb: 8, mt: 4 }} variant='h4'>
         Stel filters in
       </Typography>
-      <FormControl>
+      <FormControl disabled={isFetching}>
         <RadioGroup value={activeOrDate} onChange={updateFilter}>
           <FormControlLabel
             control={<Radio />}
@@ -75,7 +111,7 @@ export const MachrabordFilters = () => {
       </FormControl>
 
       <Box sx={{ display: "flex", width: "100%", maxWidth: "20rem", gap: 2, mt: 4, mb: 6 }}>
-        <FormControl fullWidth disabled={activeOrDate === "active"}>
+        <FormControl fullWidth disabled={activeOrDate === "active" || isFetching}>
           <InputLabel id='beginjaar-label'>Beginjaar</InputLabel>
           <Select
             labelId='beginjaar-label'
@@ -91,7 +127,7 @@ export const MachrabordFilters = () => {
           </Select>
         </FormControl>
 
-        <FormControl fullWidth disabled={activeOrDate === "active" || !beginjaar}>
+        <FormControl fullWidth disabled={activeOrDate === "active" || !beginjaar || isFetching}>
           <InputLabel id='eindjaar-label'>Eindjaar</InputLabel>
           <Select
             labelId='eindjaar-label'
@@ -107,7 +143,13 @@ export const MachrabordFilters = () => {
           </Select>
         </FormControl>
       </Box>
-      <Button title='Start Machrabord' onClick={startMachrabord} sx={{ marginTop: "auto" }} />
+      <Button
+        title='Start Machrabord'
+        onClick={startMachrabord}
+        sx={{ marginTop: "auto" }}
+        disabled={isFetching || (activeOrDate === "date" && (!beginjaar || !eindjaar))}
+      />
+      {isFetching && <CircularProgress sx={{ mt: 3 }} />}
     </Box>
   );
 };

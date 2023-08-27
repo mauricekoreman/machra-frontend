@@ -30,7 +30,7 @@ const GridContainer = styled(Box)`
 
 export const SpelState = () => {
   const dispatch = useMachrabordDispatch();
-  const { activeVerhaal, machrabordVerhalen } = useMachrabordState();
+  const { activeVerhaal, inGameMachrabordVerhalen } = useMachrabordState();
   const [hideActiveVerhaal, setHideActiveVerhaal] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -43,6 +43,10 @@ export const SpelState = () => {
     } else {
       setModalOpen(true);
     }
+  }
+
+  if (inGameMachrabordVerhalen.length === 0) {
+    dispatch({ type: "changeGameState", payload: "einde" });
   }
 
   return !hideActiveVerhaal ? (
@@ -66,14 +70,12 @@ export const SpelState = () => {
       >
         <Button
           component={<RejectStoryIcon size={"2em"} />}
-          onClick={() => dispatch({ type: "rejectVerhaal" })}
+          onClick={() => dispatch({ type: "getVerhaal" })}
         />
         <Button
           component={<NewStoryIcon size={"2em"} />}
           onClick={() => {
-            if (machrabordVerhalen.length === 0) {
-              dispatch({ type: "changeGameState", payload: "einde" });
-            }
+            dispatch({ type: "acceptVerhaal" });
             setHideActiveVerhaal(true);
           }}
         />
@@ -81,6 +83,9 @@ export const SpelState = () => {
     </>
   ) : (
     <>
+      <Typography alignSelf='baseline' mb={2}>
+        <i>Verhalen in spel: {inGameMachrabordVerhalen.length}</i>
+      </Typography>
       <GridContainer>
         {[...Array(63)].map((_, tileNumber) => (
           <Tile key={tileNumber + 1} onClick={() => getVerhaalOrNah(tileNumber + 1)}>
