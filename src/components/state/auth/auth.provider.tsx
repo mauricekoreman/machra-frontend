@@ -1,5 +1,6 @@
 import { Dispatch, ReactNode, createContext, useContext, useEffect, useReducer } from "react";
 import { accessTokenKey, userKey } from "../../../contants";
+import { queryClient } from "../../../App";
 
 export type Role = "user" | "manager" | "admin";
 
@@ -38,6 +39,7 @@ function authReducer(state: typeof authInitialState, action: Action): IAuthState
     case "signout":
       localStorage.removeItem(accessTokenKey);
       localStorage.removeItem(userKey);
+      queryClient.clear();
       return {
         user: { roles: [] },
       };

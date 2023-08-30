@@ -21,7 +21,6 @@ import wapen from "../../../assets/wapen.png";
 import { theme } from "../../../theme";
 import { Header, HeaderProvider } from "../header";
 import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
-import { useQueryClient } from "@tanstack/react-query";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -56,8 +55,6 @@ export const DrawerNavigation: React.FC = () => {
   const authDispatch = useAuthDispatch();
   const { user } = useAuthState();
   const isAdmin = user.roles.includes("admin");
-
-  const queryClient = useQueryClient();
 
   const navItems = [
     {
@@ -141,7 +138,6 @@ export const DrawerNavigation: React.FC = () => {
             <Button
               sx={{ mt: "auto", mb: 2 }}
               onClick={() => {
-                queryClient.clear();
                 authDispatch({ type: "signout" });
               }}
             >

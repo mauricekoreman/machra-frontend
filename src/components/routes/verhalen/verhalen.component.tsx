@@ -28,7 +28,6 @@ export const Verhalen = () => {
   const navigate = useNavigate();
   const { ref, inView } = useInView();
   const authDispatch = useAuthDispatch();
-  const [allFetchedStories, setAllFetchedStories] = useState<Verhaal[]>([]);
 
   // Getting all the stories on infinite scroll
   const {
@@ -74,15 +73,14 @@ export const Verhalen = () => {
   }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   // Setting stories array based on if there is a search going on or not
-  useEffect(() => {
-    if (isSearchActive && !isLoadingSearch) {
-      setAllFetchedStories(searchVerhalen ? searchVerhalen.items : []);
-    } else {
-      setAllFetchedStories(
-        infiniteVerhalen ? infiniteVerhalen.pages.flatMap((obj) => obj?.items) : []
-      );
-    }
-  }, [infiniteVerhalen, searchVerhalen, query, isLoadingSearch, isSearchActive]);
+  let allFetchedVerhalenLet = [];
+  if (isSearchActive && !isLoadingSearch) {
+    allFetchedVerhalenLet = searchVerhalen ? searchVerhalen.items : [];
+  } else {
+    allFetchedVerhalenLet = infiniteVerhalen
+      ? infiniteVerhalen.pages.flatMap((obj) => obj?.items)
+      : [];
+  }
 
   useEffect(() => {
     if (infiniteError || searchError) {
@@ -113,8 +111,8 @@ export const Verhalen = () => {
         {infiniteError || searchError ? (
           <></>
         ) : !isInitialLoading && !isFetchingSearch ? (
-          allFetchedStories.map((verhaal, i) => {
-            if (allFetchedStories.length === i + 1 && !isSearchActive) {
+          allFetchedVerhalenLet.map((verhaal, i) => {
+            if (allFetchedVerhalenLet.length === i + 1 && !isSearchActive) {
               return (
                 <div ref={ref} key={verhaal.id}>
                   <StoryCard data={verhaal} onClick={() => navigate(`/verhalen/${verhaal.id}`)} />
