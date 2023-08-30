@@ -28,7 +28,6 @@ export const Verhalen = () => {
   const navigate = useNavigate();
   const { ref, inView } = useInView();
   const authDispatch = useAuthDispatch();
-  const [allFetchedStories, setAllFetchedStories] = useState<Verhaal[]>([]);
 
   // Getting all the stories on infinite scroll
   const {

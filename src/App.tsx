@@ -10,9 +10,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const queryClient = new QueryClient();
 function App() {
-  const queryClient = new QueryClient();
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
