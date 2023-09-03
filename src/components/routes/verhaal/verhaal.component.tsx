@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { Error } from "../../../api/apiTypes";
+import { useEffect } from "react";
 
 export const Verhaal = () => {
   const { user } = useAuthState();
@@ -30,9 +31,11 @@ export const Verhaal = () => {
     refetchOnWindowFocus: false,
   });
 
-  if (error instanceof AxiosError) {
-    toast((error.response?.data as Error).message, { type: "error" });
-  }
+  useEffect(() => {
+    if (error instanceof AxiosError) {
+      toast((error.response?.data as Error).message, { type: "error" });
+    }
+  }, [error]);
 
   return (
     <>
@@ -76,3 +79,4 @@ export const Verhaal = () => {
     </>
   );
 };
+

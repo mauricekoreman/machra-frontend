@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Button } from "../../lib/button/button.component";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { machraJarenObj } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
 import { useQuery } from "@tanstack/react-query";
@@ -77,9 +77,15 @@ export const MachrabordFilters = () => {
     machrabordDispatch({ type: "start", payload: machrabordVerhalen.items });
   }
 
-  if (error instanceof AxiosError) {
-    toast((error.response?.data as Error).message, { type: "error" });
-  }
+  useEffect(() => {
+    if (error instanceof AxiosError) {
+      toast((error.response?.data as Error).message, { type: "error" });
+    }
+
+    if (machrabordVerhalen?.items && machrabordVerhalen.items.length <= 0) {
+      toast("Geen Machrabordverhalen beschikbaar met dit filter... :(", { type: "warning" });
+    }
+  }, [error, machrabordVerhalen?.items]);
 
   return (
     <Box
@@ -153,6 +159,11 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
+
+
+
+
 
 
 
