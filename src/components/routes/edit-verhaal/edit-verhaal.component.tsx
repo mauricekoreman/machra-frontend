@@ -10,10 +10,6 @@ import {
   TextField,
   Typography,
   Button as MuiButton,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  SelectChangeEvent,
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -29,8 +25,7 @@ import {
 import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
 import { Button } from "../../lib/button/button.component";
 import { Modal } from "../../lib/modal/modal.component";
-import { Verhaal as IVerhaal } from "../verhalen/verhalen.component";
-import { shouldStoryBeActive } from "./active-verhaal";
+import { Verhaal as IVerhaal } from "../../../api/storiesService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
@@ -44,7 +39,7 @@ interface IModalData {
 export const EditVerhaal = () => {
   const { state } = useLocation();
   const { verhaalId } = useParams();
-  const { title, description, year_of_story, active } = (state as IVerhaal) || {};
+  const { title, description, year_of_story } = (state as IVerhaal) || {};
 
   const navigate = useNavigate();
   const { user } = useAuthState();
@@ -54,7 +49,6 @@ export const EditVerhaal = () => {
   const titelRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
   const [jaarGebeurtenis, setJaargebeurtenis] = useState<number>(year_of_story ?? "");
-  const [verhaalActive, setVerhaalActive] = useState(active ?? true);
 
   const isManager = user.roles.includes("manager");
   const isAdmin = user.roles.includes("admin");
@@ -92,6 +86,7 @@ export const EditVerhaal = () => {
     error: deleteError,
   } = useMutation(httpDeleteStory, {
     onSuccess: () => {
+      queryClient.removeQueries(["infinite-verhalen", "verhaal", verhaalId]);
       queryClient.invalidateQueries(["infinite-verhalen"], { refetchType: "all" });
     },
   });
@@ -101,7 +96,6 @@ export const EditVerhaal = () => {
       const verhaalState: PostVerhaal = {
         title: titelRef.current.value,
         description: descRef.current.value,
-        active: shouldStoryBeActive(jaarGebeurtenis),
         year_of_story: jaarGebeurtenis,
       };
 
@@ -143,10 +137,6 @@ export const EditVerhaal = () => {
 
   async function deleteVerhaal() {
     deleteStory(verhaalId as string);
-  }
-
-  function handleChangeActive(e: SelectChangeEvent) {
-    setVerhaalActive(JSON.parse(e.target.value));
   }
 
   function closeModal() {
@@ -222,23 +212,6 @@ export const EditVerhaal = () => {
             </Select>
           </FormControl>
 
-          {(isManager || isAdmin) && (
-            <RadioGroup value={verhaalActive} onChange={handleChangeActive}>
-              <FormControlLabel
-                value={true}
-                label='Aan actief Machrabord toevoegen'
-                control={<Radio />}
-                disabled={isLoading}
-              />
-              <FormControlLabel
-                value={false}
-                label='Niet in actief Machrabord'
-                control={<Radio />}
-                disabled={isLoading}
-              />
-            </RadioGroup>
-          )}
-
           <Button
             title={state === null ? "Upload verhaal" : "Update verhaal"}
             type='submit'
@@ -266,6 +239,11 @@ export const EditVerhaal = () => {
       </Container>
       <Modal open={modalData.open || false} onClose={closeModal}>
         <Typography>{modalData.message}</Typography>
+        {!isAdmin && !isManager && (
+          <Typography variant='body2' mt={2}>
+            Als dit verhaal wordt goedgekeurd, dan zal deze in Machrabord verschijnen.
+          </Typography>
+        )}
         <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
           <MuiButton onClick={closeModal}>Annuleer</MuiButton>
           <MuiButton onClick={modalData.onClickBevestig}>Bevestig</MuiButton>

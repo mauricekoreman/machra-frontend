@@ -1,5 +1,5 @@
 import { Dispatch, ReactNode, createContext, useContext, useReducer } from "react";
-import { Verhaal } from "../../routes/verhalen/verhalen.component";
+import { Verhaal } from "../../../api/storiesService";
 import { randomNumber } from "../../../utils/random-number";
 
 type MachrabordReducerActions =
@@ -117,3 +117,4 @@ export const useMachrabordDispatch = () => {
 
   return context;
 };
+

@@ -13,11 +13,13 @@ import { ProtectedRoute } from "./protected-route/protected-route";
 import { useAuthState } from "../state/auth/auth.provider";
 import { AdminPage, NewUserPage } from "./admin";
 import { accessTokenKey } from "../../contants";
+import { ManagerDashboard } from "./ManagerDashboard/manager-dashboard.component";
 
 export const Router = () => {
   const { user } = useAuthState();
   const isAuthenticated = localStorage.getItem(accessTokenKey) ? true : false;
   const isAdmin = user.roles.includes("admin");
+  const isManager = user.roles.includes("manager");
 
   const browserRouter = createBrowserRouter([
     {
@@ -56,6 +58,16 @@ export const Router = () => {
                 {
                   path: "create-user",
                   element: <NewUserPage />,
+                },
+              ],
+            },
+            {
+              path: "manager",
+              element: <ProtectedRoute isAllowed={isAdmin || isManager} />,
+              children: [
+                {
+                  index: true,
+                  element: <ManagerDashboard />,
                 },
               ],
             },
@@ -104,6 +116,7 @@ export const Router = () => {
 
   return <RouterProvider router={browserRouter} />;
 };
+
 
 
 

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 interface IProtectedRoute {
-  isAllowed: unknown;
+  isAllowed: boolean;
   redirectPath?: string;
   children?: JSX.Element;
 }

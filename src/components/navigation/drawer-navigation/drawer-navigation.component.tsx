@@ -12,7 +12,7 @@ import { useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import styled from "@emotion/styled";
 
-import { MdAdminPanelSettings, MdLibraryBooks, MdList } from "react-icons/md";
+import { MdAdminPanelSettings, MdDashboard, MdLibraryBooks, MdList } from "react-icons/md";
 import { BsDice3Fill } from "react-icons/bs";
 import { MdMenu as MenuIcon } from "react-icons/md";
 
@@ -55,6 +55,7 @@ export const DrawerNavigation: React.FC = () => {
   const authDispatch = useAuthDispatch();
   const { user } = useAuthState();
   const isAdmin = user.roles.includes("admin");
+  const isManager = user.roles.includes("manager");
 
   const navItems = [
     {
@@ -74,6 +75,9 @@ export const DrawerNavigation: React.FC = () => {
     },
     ...(isAdmin
       ? [{ text: "Admin", href: "/admin", icon: <MdAdminPanelSettings size={iconSize} /> }]
+      : []),
+    ...(isAdmin || isManager
+      ? [{ text: "Manager dashboard", href: "/manager", icon: <MdDashboard size={iconSize} /> }]
       : []),
   ];
 

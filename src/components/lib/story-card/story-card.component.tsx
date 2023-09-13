@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Card, CardContent, Typography } from "@mui/material";
-import { Verhaal } from "../../routes/verhalen/verhalen.component";
+import { Verhaal } from "../../../api/storiesService";
 import React from "react";
 
 const StyledStory = styled.p`
@@ -41,6 +41,7 @@ export const StoryCard: React.FC<{
     </Card>
   );
 };
+
 
 
 

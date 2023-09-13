@@ -1,7 +1,7 @@
 import { Button as MuiButton, Container, TextField, Typography, Box } from "@mui/material";
 import wapen from "../../../../assets/wapen.png";
 import { Button } from "../../../lib/button/button.component";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useAuthDispatch } from "../../../state/auth/auth.provider";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
@@ -32,9 +32,11 @@ export const Login = () => {
     }
   }
 
-  if (error instanceof AxiosError) {
-    toast((error.response?.data as Error).message, { type: "error" });
-  }
+  useEffect(() => {
+    if (error instanceof AxiosError) {
+      toast((error.response?.data as Error).message, { type: "error" });
+    }
+  }, [error]);
 
   return (
     <Container
@@ -90,3 +92,4 @@ export const Login = () => {
     </Container>
   );
 };
+
