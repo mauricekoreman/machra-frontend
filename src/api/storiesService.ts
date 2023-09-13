@@ -1,6 +1,14 @@
 import axios from "axios";
-import { Verhaal } from "../components/routes/verhalen/verhalen.component";
 import { accessTokenKey } from "../contants";
+
+export interface Verhaal {
+  id: string;
+  title: string;
+  description: string;
+  year_of_story: number;
+  created_at: string;
+  isReviewed: boolean;
+}
 
 // @ts-ignore Property 'env' does not exist on type 'ImportMeta'
 const API_URL = `${import.meta.env.VITE_BASE_URL}/stories`;
@@ -17,7 +25,6 @@ export async function httpGetStoryById(id: string) {
 interface HttpGetStories {
   token?: string;
   params?: {
-    active?: boolean;
     search?: string;
     date1?: number;
     date2?: number;
@@ -42,20 +49,23 @@ export async function httpGetStories({ params = {} }: HttpGetStories) {
     params: params,
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  return response.data as {
-    currentPage: number;
-    items: Verhaal[];
-    totalItems: number;
-    totalPages: number;
-  };
+  return response.data as HttpGetStoriesResponse;
 }
 
-export interface PostVerhaal {
-  title: string;
-  description: string;
-  active: boolean;
-  year_of_story: number;
+export interface HttpGetStoriesAdmin {
+  isReviewed: boolean;
 }
+
+export async function httpGetStoriesAdmin(params: HttpGetStoriesAdmin) {
+  const accessToken = localStorage.getItem(accessTokenKey);
+  const response = await axios.get(`${API_URL}/manager`, {
+    params: params,
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  return response.data as Verhaal[];
+}
+
+export type PostVerhaal = Pick<Verhaal, "title" | "description" | "year_of_story">;
 
 export async function httpPostStory(story: PostVerhaal) {
   const accessToken = localStorage.getItem(accessTokenKey);
@@ -65,7 +75,7 @@ export async function httpPostStory(story: PostVerhaal) {
   return response.data as Verhaal;
 }
 
-type UpdateVerhaal = Partial<PostVerhaal>;
+type UpdateVerhaal = Partial<Verhaal>;
 
 export async function httpPatchStory({
   story,

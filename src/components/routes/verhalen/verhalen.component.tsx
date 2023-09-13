@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, CircularProgress, Container, Fab, Skeleton } from "@mui/material";
+import { Box, CircularProgress, Container, Fab, Skeleton, Typography } from "@mui/material";
 
 import { StoryCard } from "../../lib/story-card/story-card.component";
 import { MdOutlineEdit as EditIcon } from "react-icons/md";
@@ -14,15 +14,6 @@ import { useAuthDispatch } from "../../state/auth/auth.provider";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { useDebounce } from "../../../hooks/useDebounce";
-
-export interface Verhaal {
-  id: string;
-  title: string;
-  description: string;
-  active: boolean;
-  year_of_story: number;
-  created_at: string;
-}
 
 export const Verhalen = () => {
   const navigate = useNavigate();
@@ -108,8 +99,10 @@ export const Verhalen = () => {
           gridAutoFlow: "dense",
         }}
       >
-        {infiniteError || searchError ? (
-          <></>
+        {infiniteError || searchError || allFetchedVerhalenLet.length === 0 ? (
+          <Typography textAlign={"center"} variant='h3' fontSize={20}>
+            Geen verhalen gevonden :'(
+          </Typography>
         ) : !isInitialLoading && !isFetchingSearch ? (
           allFetchedVerhalenLet.map((verhaal, i) => {
             if (allFetchedVerhalenLet.length === i + 1 && !isSearchActive) {
