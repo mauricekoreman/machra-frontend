@@ -22,9 +22,8 @@ import { AxiosError } from "axios";
 import { Error } from "../../../api/apiTypes";
 
 interface machrabordFilters {
-  date1: number | undefined;
-  date2: number | undefined;
-  active: boolean | undefined;
+  date1: number;
+  date2: number;
 }
 
 export const MachrabordFilters = () => {
@@ -45,6 +44,8 @@ export const MachrabordFilters = () => {
     error,
   } = useQuery({
     queryKey: ["machrabord-verhalen", filters],
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     queryFn: async () =>
       await httpGetStories({ params: { ...filters, withAlwaysActiveStories: true } }),
     enabled: Object.keys(filters).length > 0,
@@ -61,11 +62,20 @@ export const MachrabordFilters = () => {
   }
 
   async function startMachrabord() {
-    const date1 = beginjaar === "" || activeOrDate === "active" ? undefined : Number(beginjaar);
-    const date2 = eindjaar === "" || activeOrDate === "active" ? undefined : Number(eindjaar);
-    const active = activeOrDate === "active" ? true : undefined;
+    let date1: number;
+    let date2: number;
 
-    setFilters({ date1, date2, active });
+    if (activeOrDate === "date") {
+      date1 = Number(beginjaar);
+      date2 = Number(eindjaar);
+    } else {
+      // @ts-expect-error .at() is not supported yet in typescript
+      date1 = machraJaren.values.at(-5);
+      // @ts-expect-error .at() is not supported yet in typescript
+      date2 = machraJaren.values.at(-1);
+    }
+
+    setFilters({ date1, date2 });
   }
 
   if (
@@ -159,6 +169,26 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
