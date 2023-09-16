@@ -3,6 +3,7 @@ import {
   CircularProgress,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Radio,
@@ -113,7 +114,7 @@ export const MachrabordFilters = () => {
         <RadioGroup value={activeOrDate} onChange={updateFilter}>
           <FormControlLabel
             control={<Radio />}
-            label='Huidige Machrabord versie'
+            label='Actief Machrabord (afgelopen 5 jaar)'
             labelPlacement='end'
             value='active'
           />
@@ -151,11 +152,13 @@ export const MachrabordFilters = () => {
             label='Eindjaar'
             onChange={(e) => handleChangeDate(e, "eind")}
           >
-            {machraJaren.values.slice(machraJaren.values.indexOf(Number(beginjaar))).map((jaar) => (
-              <MenuItem key={jaar} value={jaar}>
-                {jaar}
-              </MenuItem>
-            ))}
+            {machraJaren.values
+              .slice(machraJaren.values.indexOf(Number(beginjaar)))
+              .map((jaar, i) => (
+                <MenuItem key={jaar} value={jaar}>
+                  {machraJaren.ui[i + machraJaren.values.indexOf(Number(beginjaar))]}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Box>
@@ -169,6 +172,13 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
+
+
+
+
+
+
 
 
 

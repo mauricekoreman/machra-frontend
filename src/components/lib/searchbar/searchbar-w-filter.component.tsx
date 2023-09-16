@@ -130,9 +130,9 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
               >
                 {machraJaren.values
                   .slice(machraJaren.values.indexOf(Number(beginjaar)))
-                  .map((jaar) => (
+                  .map((jaar, i) => (
                     <MenuItem key={jaar} value={jaar}>
-                      {jaar}
+                      {machraJaren.ui[i + machraJaren.values.indexOf(Number(beginjaar))]}
                     </MenuItem>
                   ))}
               </Select>
@@ -144,6 +144,11 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
     </Box>
   );
 };
+
+
+
+
+
 
 
 
