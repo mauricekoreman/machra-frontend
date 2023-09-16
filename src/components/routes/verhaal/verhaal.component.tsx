@@ -109,6 +109,11 @@ export const Verhaal = () => {
             <Typography variant='body1' sx={{ whiteSpace: "pre-line" }}>
               {queryVerhaal?.description}
             </Typography>
+            <Typography variant='subtitle2' mt={5}>
+              {queryVerhaal?.year_of_story.toString().slice(0, 4) +
+                " / " +
+                queryVerhaal?.year_of_story.toString().slice(4)}
+            </Typography>
             {reviewVerhaal && (
               <Box
                 sx={{
@@ -145,6 +150,16 @@ export const Verhaal = () => {
     </>
   );
 };
+
+
+
+
+
+
+
+
+
+
 
 
 
