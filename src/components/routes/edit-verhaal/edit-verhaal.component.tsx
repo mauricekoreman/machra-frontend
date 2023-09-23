@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Header } from "../../navigation/header";
 import { calcMachraJarenArray } from "../../../utils/machrajaren";
 import {

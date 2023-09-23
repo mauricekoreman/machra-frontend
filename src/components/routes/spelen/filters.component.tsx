@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Button } from "../../lib/button/button.component";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { calcMachraJarenArray } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
 import { useQuery } from "@tanstack/react-query";

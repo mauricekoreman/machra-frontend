@@ -126,7 +126,7 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
                 label='Eindjaar'
                 onChange={(e) => handleChangeDate(e, "eind")}
               >
-                {calcMachraJarenArray(parseInt(beginjaar)).map((jaar, i) => (
+                {calcMachraJarenArray(parseInt(beginjaar)).map((jaar) => (
                   <MenuItem key={jaar} value={jaar}>
                     {jaar}
                   </MenuItem>
