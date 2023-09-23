@@ -115,7 +115,7 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
               </Select>
             </FormControl>
 
-            <FormControl fullWidth disabled={!beginjaar}>
+            <FormControl fullWidth disabled={!Number(beginjaar)}>
               <InputLabel size='small' id='eindjaar-label'>
                 Eindjaar
               </InputLabel>
@@ -140,6 +140,12 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
     </Box>
   );
 };
+
+
+
+
+
+
 
 
 
