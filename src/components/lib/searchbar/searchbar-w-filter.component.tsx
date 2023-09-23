@@ -14,8 +14,8 @@ import {
   MdFilterAlt as FilterIcon,
   MdClose as ClearIcon,
 } from "react-icons/md";
-import { machraJarenObj } from "../../../utils/machrajaren";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { calcMachraJarenArray } from "../../../utils/machrajaren";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { theme } from "../../../theme";
 import { GetStoriesParams } from "../../../api/storiesService";
@@ -53,8 +53,6 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
   const [eindjaar, setEindjaar] = useState("mount");
 
   const areFiltersSet = Boolean(beginjaar) && beginjaar !== "mount";
-
-  const machraJaren = useMemo(() => machraJarenObj(), []);
 
   function handleChangeDate(e: SelectChangeEvent, type: "begin" | "eind") {
     type === "begin"
@@ -109,9 +107,9 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
                 label='Beginjaar'
                 onChange={(e) => handleChangeDate(e, "begin")}
               >
-                {machraJaren.values.map((jaar, index) => (
+                {calcMachraJarenArray().map((jaar) => (
                   <MenuItem key={jaar} value={jaar}>
-                    {machraJaren.ui[index]}
+                    {jaar}
                   </MenuItem>
                 ))}
               </Select>
@@ -128,13 +126,11 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
                 label='Eindjaar'
                 onChange={(e) => handleChangeDate(e, "eind")}
               >
-                {machraJaren.values
-                  .slice(machraJaren.values.indexOf(Number(beginjaar)))
-                  .map((jaar, i) => (
-                    <MenuItem key={jaar} value={jaar}>
-                      {machraJaren.ui[i + machraJaren.values.indexOf(Number(beginjaar))]}
-                    </MenuItem>
-                  ))}
+                {calcMachraJarenArray(parseInt(beginjaar)).map((jaar, i) => (
+                  <MenuItem key={jaar} value={jaar}>
+                    {jaar}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Stack>

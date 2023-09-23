@@ -10,12 +10,13 @@ import {
   TextField,
   Typography,
   Button as MuiButton,
+  FormHelperText,
 } from "@mui/material";
 import { MdArrowBack as BackIcon } from "react-icons/md";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Header } from "../../navigation/header";
-import { machraJarenObj } from "../../../utils/machrajaren";
+import { calcMachraJarenArray } from "../../../utils/machrajaren";
 import {
   PostVerhaal,
   httpDeleteStory,
@@ -52,8 +53,6 @@ export const EditVerhaal = () => {
 
   const isManager = user.roles.includes("manager");
   const isAdmin = user.roles.includes("admin");
-
-  const machraJaren = useMemo(() => machraJarenObj(), []);
 
   const queryClient = useQueryClient();
 
@@ -201,15 +200,18 @@ export const EditVerhaal = () => {
               label='Jaar van gebeurtenis'
               onChange={(e) => setJaargebeurtenis(e.target.value as number)}
             >
-              {machraJaren.values.map((jaar, index) => (
+              {calcMachraJarenArray().map((jaar) => (
                 <MenuItem key={jaar} value={jaar}>
-                  {machraJaren.ui[index]}
+                  {jaar}
                 </MenuItem>
               ))}
               <MenuItem key={"no-year"} value={0}>
                 Geen jaar
               </MenuItem>
             </Select>
+            <FormHelperText>
+              *Machrajaren, dus welk jaar het huidige sjaarzenjaar is.
+            </FormHelperText>
           </FormControl>
 
           <Button

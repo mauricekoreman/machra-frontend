@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { Button } from "../../lib/button/button.component";
 import { useEffect, useMemo, useState } from "react";
-import { machraJarenObj } from "../../../utils/machrajaren";
+import { calcMachraJarenArray } from "../../../utils/machrajaren";
 import { useMachrabordDispatch } from "../../state/machrabord/machrabord.provider";
 import { useQuery } from "@tanstack/react-query";
 import { httpGetStories } from "../../../api/storiesService";
@@ -28,8 +28,6 @@ interface machrabordFilters {
 
 export const MachrabordFilters = () => {
   const machrabordDispatch = useMachrabordDispatch();
-
-  const machraJaren = useMemo(() => machraJarenObj(), []);
 
   const [activeOrDate, setActiveOrDate] = useState<"active" | "date">("active");
   const [beginjaar, setBeginjaar] = useState("");
@@ -135,9 +133,9 @@ export const MachrabordFilters = () => {
             label='Beginjaar'
             onChange={(e) => handleChangeDate(e, "begin")}
           >
-            {machraJaren.values.map((jaar, index) => (
+            {calcMachraJarenArray().map((jaar) => (
               <MenuItem key={jaar} value={jaar}>
-                {machraJaren.ui[index]}
+                {jaar}
               </MenuItem>
             ))}
           </Select>
@@ -151,13 +149,11 @@ export const MachrabordFilters = () => {
             label='Eindjaar'
             onChange={(e) => handleChangeDate(e, "eind")}
           >
-            {machraJaren.values
-              .slice(machraJaren.values.indexOf(Number(beginjaar)))
-              .map((jaar, i) => (
-                <MenuItem key={jaar} value={jaar}>
-                  {machraJaren.ui[i + machraJaren.values.indexOf(Number(beginjaar))]}
-                </MenuItem>
-              ))}
+            {calcMachraJarenArray(parseInt(beginjaar)).map((jaar) => (
+              <MenuItem key={jaar} value={jaar}>
+                {jaar}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
