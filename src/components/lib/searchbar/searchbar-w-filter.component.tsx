@@ -82,7 +82,7 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
 
   return (
     <Box>
-      <Stack component={"form"} direction={"row"} spacing={1}>
+      <Stack onSubmit={(e) => e.preventDefault()} component={"form"} direction={"row"} spacing={1}>
         <Searchbar handleChange={(e) => setSearchInput(e.target.value)} />
         <FilterButton
           showbubble={areFiltersSet ? areFiltersSet : undefined}
@@ -140,9 +140,6 @@ export const SearchWithFilter = ({ setSearch }: Props) => {
     </Box>
   );
 };
-
-
-
 
 
 

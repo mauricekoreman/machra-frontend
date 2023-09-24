@@ -37,6 +37,11 @@ export const SpelState = () => {
   function getVerhaalOrNah(tileNumber: number) {
     const isStoryTile = machrabordTiles.includes(tileNumber);
 
+    if (tileNumber === 63) {
+      dispatch({ type: "gewonnen" });
+      return;
+    }
+
     if (isStoryTile) {
       dispatch({ type: "getVerhaal" });
       setHideActiveVerhaal(false);
@@ -100,6 +105,7 @@ export const SpelState = () => {
     </>
   );
 };
+
 
 
 

@@ -68,9 +68,9 @@ export const MachrabordFilters = () => {
       date2 = Number(eindjaar);
     } else {
       // @ts-expect-error .at() is not supported yet in typescript
-      date1 = machraJaren.values.at(-5);
+      date1 = calcMachraJarenArray().at(-5);
       // @ts-expect-error .at() is not supported yet in typescript
-      date2 = machraJaren.values.at(-1);
+      date2 = calcMachraJarenArray().at(-1);
     }
 
     setFilters({ date1, date2 });
@@ -167,6 +167,7 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
 
 
 

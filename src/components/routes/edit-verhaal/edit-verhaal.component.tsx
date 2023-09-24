@@ -210,7 +210,7 @@ export const EditVerhaal = () => {
               </MenuItem>
             </Select>
             <FormHelperText>
-              *Machrajaren, dus welk jaar het huidige sjaarzenjaar is.
+              *In Machrajaren. Voorbeeld: 2022 loopt van okt. 2022 tot okt 2023.
             </FormHelperText>
           </FormControl>
 

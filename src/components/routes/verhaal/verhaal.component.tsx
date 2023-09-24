@@ -13,14 +13,6 @@ import { Error } from "../../../api/apiTypes";
 import { useEffect } from "react";
 import { Button } from "../../lib/button/button.component";
 
-function displayDate(date: number) {
-  if (date === 0) {
-    return null;
-  } else {
-    return date.toString().slice(0, 4) + " / " + date.toString().slice(4);
-  }
-}
-
 export const Verhaal = () => {
   const { user } = useAuthState();
   const { scrollY } = useScroll();
@@ -118,7 +110,7 @@ export const Verhaal = () => {
               {queryVerhaal?.description}
             </Typography>
             <Typography variant='subtitle2' mt={5}>
-              {displayDate(queryVerhaal?.year_of_story as number)}
+              {queryVerhaal?.year_of_story}
             </Typography>
             {reviewVerhaal && (
               <Box
@@ -156,6 +148,8 @@ export const Verhaal = () => {
     </>
   );
 };
+
+
 
 
 

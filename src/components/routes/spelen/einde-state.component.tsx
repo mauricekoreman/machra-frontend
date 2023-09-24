@@ -16,7 +16,7 @@ export const EindeState: React.FC<{ onClickOpnieuw: () => void; onClickStoppen: 
         bottom: 30,
         display: "flex",
         justifyContent: "space-between",
-        gap: 3,
+        gap: 1,
       }}
     >
       <Button title='Opnieuw' onClick={onClickOpnieuw} />
@@ -24,3 +24,12 @@ export const EindeState: React.FC<{ onClickOpnieuw: () => void; onClickStoppen: 
     </Box>
   </Box>
 );
+
+
+
+
+
+
+
+
+

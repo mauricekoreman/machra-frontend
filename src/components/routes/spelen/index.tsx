@@ -13,6 +13,7 @@ import { useHeader } from "../../navigation/header";
 import { MdOutlineStopCircle as StopIcon } from "react-icons/md";
 import { SpelState } from "./spel-state.component";
 import { EindeState } from "./einde-state.component";
+import { WinnaarState } from "./winnaar-state";
 
 export const Spelen = () => {
   const { isMachrabordActive, gameState, allFetchedMachrabordVerhalen } = useMachrabordState();
@@ -72,6 +73,13 @@ export const Spelen = () => {
             onClickStoppen={() => machrabordDispatch({ type: "stop" })}
           />
         );
+      case "winnaar":
+        return (
+          <WinnaarState
+            onClickContinue={() => machrabordDispatch({ type: "changeGameState", payload: "spel" })}
+            onClickStop={() => machrabordDispatch({ type: "stop" })}
+          />
+        );
       default:
         return <Typography>Something went wrong...</Typography>;
     }
@@ -104,6 +112,8 @@ export const Spelen = () => {
     </>
   );
 };
+
+
 
 
 

@@ -7,14 +7,15 @@ type MachrabordReducerActions =
   | "stop"
   | "acceptVerhaal"
   | "getVerhaal"
-  | "changeGameState";
+  | "changeGameState"
+  | "gewonnen";
 
 interface IMachrabordState {
   isMachrabordActive: boolean;
   allFetchedMachrabordVerhalen: Verhaal[];
   inGameMachrabordVerhalen: Verhaal[];
   activeVerhaal: Verhaal | null;
-  gameState: "uitleg" | "filterSettings" | "spel" | "einde";
+  gameState: "uitleg" | "filterSettings" | "spel" | "einde" | "winnaar";
 }
 
 type Action =
@@ -80,6 +81,12 @@ function machrabordReducer(state: typeof machrabordInitialState, action: Action)
         gameState: gameState,
       };
     }
+    case "gewonnen": {
+      return {
+        ...state,
+        gameState: "winnaar",
+      };
+    }
     default:
       return { ...state };
   }
@@ -117,4 +124,5 @@ export const useMachrabordDispatch = () => {
 
   return context;
 };
+
 
