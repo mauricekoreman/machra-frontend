@@ -110,7 +110,7 @@ export const Verhaal = () => {
               {queryVerhaal?.description}
             </Typography>
             <Typography variant='subtitle2' mt={5}>
-              {queryVerhaal?.year_of_story}
+              {queryVerhaal?.year_of_story === 0 ? "" : queryVerhaal?.year_of_story}
             </Typography>
             {reviewVerhaal && (
               <Box
@@ -148,6 +148,7 @@ export const Verhaal = () => {
     </>
   );
 };
+
 
 
 
