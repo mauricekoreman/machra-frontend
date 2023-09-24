@@ -21,6 +21,8 @@ import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import { Error } from "../../../api/apiTypes";
 
+import filtersImg from "../../../assets/img/nolst.png";
+
 interface machrabordFilters {
   date1: number;
   date2: number;
@@ -157,6 +159,11 @@ export const MachrabordFilters = () => {
           </Select>
         </FormControl>
       </Box>
+      <img
+        src={filtersImg}
+        alt='smikkelen'
+        style={{ objectFit: "contain", height: "200px", position: "absolute", bottom: 0, left: 0 }}
+      />
       <Button
         title='Start Machrabord'
         onClick={startMachrabord}
@@ -167,6 +174,9 @@ export const MachrabordFilters = () => {
     </Box>
   );
 };
+
+
+
 
 
 

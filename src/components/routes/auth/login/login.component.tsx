@@ -1,4 +1,12 @@
-import { Button as MuiButton, Container, TextField, Typography, Box } from "@mui/material";
+import {
+  Button as MuiButton,
+  Container,
+  TextField,
+  Typography,
+  Box,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import wapen from "../../../../assets/wapen.png";
 import { Button } from "../../../lib/button/button.component";
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -8,9 +16,12 @@ import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Error } from "../../../../api/apiTypes";
 import { httpSignin } from "../../../../api/authService";
+import { MdVisibility as VisibilityOn, MdVisibilityOff as VisibilityOff } from "react-icons/md";
 
 export const Login = () => {
   const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const [showPassword, setShowPasswrd] = useState(false);
+
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const authDispatch = useAuthDispatch();
@@ -46,6 +57,7 @@ export const Login = () => {
         flexDirection: "column",
         height: "100%",
         pt: 2,
+        maxWidth: "700px !important",
       }}
     >
       <img src={wapen} />
@@ -72,7 +84,21 @@ export const Login = () => {
           variant='outlined'
           fullWidth
           required
-          type='password'
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  aria-label='toggle password visibility'
+                  onClick={() => setShowPasswrd((prevState) => !prevState)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  edge='end'
+                >
+                  {showPassword ? <VisibilityOff /> : <VisibilityOn />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <MuiButton
           variant='text'

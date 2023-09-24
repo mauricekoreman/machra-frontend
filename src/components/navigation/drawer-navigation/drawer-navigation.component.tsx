@@ -16,11 +16,11 @@ import { MdAdminPanelSettings, MdDashboard, MdLibraryBooks, MdList } from "react
 import { BsDice3Fill } from "react-icons/bs";
 import { MdMenu as MenuIcon } from "react-icons/md";
 
-import wapen from "../../../assets/wapen.png";
-
 import { theme } from "../../../theme";
 import { Header, HeaderProvider } from "../header";
 import { useAuthDispatch, useAuthState } from "../../state/auth/auth.provider";
+
+import sidebarImg from "../../../assets/img/kadir-zoomed.png";
 
 const StyledNavLink = styled(NavLink)`
   text-decoration: none;
@@ -118,8 +118,8 @@ export const DrawerNavigation: React.FC = () => {
             }}
           >
             <img
-              alt='Machra wapen'
-              src={wapen}
+              alt='Lekker biggetje'
+              src={sidebarImg}
               style={{
                 width: 120,
                 height: 120,
